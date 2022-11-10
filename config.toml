@@ -1,9 +1,22 @@
 baseURL = 'https://viig99.github.io'
 languageCode = 'en-us'
 title = '/home/vigi99'
-# (Optional) Set this to true to enable 'Last Modified by' date and git author
-#  information on 'doc' type pages.
-enableGitInfo = false
+
+disablePathToLower = true
+enableGitInfo = true
+
+[markup]
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.tableOfContents]
+  startLevel = 1
+
+[menu]
+[[menu.after]]
+  identifier = 'Home'
+  url = '/'
+  weight = 1
 
 [params]
   # (Optional, default light) Sets color theme: light, dark or auto.
