@@ -31,7 +31,7 @@ risks on businesses.
 with 10m MAU, in 7 indian languages, does 500k queries/day. (Speech to text, Text to speech, training
 and inference pipelines.)
 - Researched and deployed e2e OCR pipeline serving 1.6m docs/day at 96%+ accuracy, used by Airtel for
-its new customer acquisition journey <https://bit.ly/35KGMdr>
+its new customer acquisition journey [ICDAR Rank 6](https://bit.ly/35KGMdr "6th Rank on Word Recognition in the wild in ICDAR 2018")
 - Building the workflow-orchestration engine which powers the customer support queries on mail / social
 media for Airtel, processes 50k emails/day, built on k8, temporal.io
 - Hired and led a team of 9 engineers.
