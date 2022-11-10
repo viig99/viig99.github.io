@@ -38,7 +38,7 @@ Fast C++ implementation of ESOLA using KFRLib, can be used for online time-stret
 <--->
 #### <https://github.com/postmanlabs/newman>
 {{< /columns >}}
-Newman is a command-line collection runner for Postman.
+Initial Contributor to Newman which is a command-line collection runner for Postman.
 
 {{< columns >}}
 #### **Postman Interceptor**
