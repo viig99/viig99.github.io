@@ -37,3 +37,4 @@ I have worked on various domain problems like:
 - [Linkedin](https://www.linkedin.com/in/arjunvariar) {{< fab linkedin "#00a0dc" >}}
 - [Github](https://github.com/viig99) {{< fab github "#211f1f" >}}
 - [Twitter](https://twitter.com/vigi99/) {{< fab twitter "#7dbbe6" >}}
+- [Email](mailto:accio.arjun@gmail.com) {{< far envelope "#EA4335" >}}
