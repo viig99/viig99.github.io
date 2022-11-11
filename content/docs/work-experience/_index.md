@@ -4,6 +4,8 @@ bookFlatSection: false
 title: "Work Experience"
 ---
 
+## Work Experience
+
 {{< columns >}}
 ### **Staff Machine Learning Engineer**
 <--->
