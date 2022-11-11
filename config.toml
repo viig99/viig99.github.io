@@ -4,6 +4,7 @@ title = '/home/vigi99'
 
 disablePathToLower = true
 enableGitInfo = true
+sectionPagesMenu = "main"
 
 [markup]
 [markup.goldmark.renderer]
@@ -13,9 +14,9 @@ enableGitInfo = true
   startLevel = 1
 
 [menu]
-[[menu.after]]
-  identifier = 'Home'
-  url = '/'
+[[menu.before]]
+  name = "Home"
+  url = "/"
   weight = 1
 
 [params]
