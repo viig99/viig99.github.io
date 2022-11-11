@@ -46,6 +46,9 @@ its new customer acquisition journey [ICDAR Rank 6](https://bit.ly/35KGMdr "6th 
     * Dynamic parsers DSL based on clustering step.
 - Building the workflow-orchestration engine which powers the customer support queries on mail / social
 media for Airtel, processes 50k emails/day, built on k8, temporal.io
+    * Reverse Engineered and ported workflows for Sprinklr from scratch.
+    * Supported 150 different workflows with ~50 activities running concurrently.
+    * Maintaining Temporal cluster on OKD, with postgres and cassandra.
 - Hired and led a team of 9 engineers.
 
 {{< columns >}}
@@ -67,9 +70,9 @@ recognition, clustering, parsing and serving.
 ### *June 2015 - Aug 2017* - *Bangalore, IN*
 {{< /columns >}}
 - Recommendation & ranking for users by clustering restaurants into latent topics space and finding top-n
-using a custom scoring functions built into node.js. Achieved <200ms response times over a set of 1
+using a custom scoring functions built into node.js. Achieved <200ms latency over a set of 1
 million restaurants per user. (Fast heuristic approach for cold start case similar to Netflix).
-- Loyalty and rewards platform with second price ad bidding for banks (pilot done with Royal Bank of
+- Loyalty and rewards platform with second price ad bidding for banks (pilot run with Royal Bank of
 Scotland).
 
 {{< columns >}}
