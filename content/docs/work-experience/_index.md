@@ -38,6 +38,7 @@ and inference pipelines.)
     * High performance Bi-directional C++ Grpc Server scaled on k8s
     * Text to Speech built using tactotron2 + vocgan's
     * Voicebot integeration with PBX exchange like Asterix.
+    * Presented work at [Nvidia GTC Winter 2020](https://www.nvidia.com/en-us/on-demand/session/gtcfall20-a21644/)
 - Researched and deployed e2e OCR pipeline serving 1.6m docs/day at 96%+ accuracy, used by Airtel for
 its new customer acquisition journey [ICDAR Rank 6](https://bit.ly/35KGMdr "6th Rank on Word Recognition in the wild in ICDAR 2018")
     * Synthetic data creation for Documented Recognition in the Wild.
@@ -61,6 +62,7 @@ media for Airtel, processes 50k emails/day, built on k8, temporal.io
 - Built OCR pipeline for reading arbitrary documents, 5 step process with word localization, word
 recognition, clustering, parsing and serving.
 - Built Voice based IVR bot for Indian business by building on top of DeepSpeech and Rasa NLU.
+- Invited for [YC 2018 Winter](https://www.ycombinator.com/) Interview Stage in San Francisco.
 
 {{< columns >}}
 ### **Machine Learning Engineer**
