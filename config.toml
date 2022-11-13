@@ -17,7 +17,7 @@ sectionPagesMenu = "main"
 [menu]
 [[menu.after]]
   name = "Contact Me"
-  url = "mailto:accio.arjun@gmail.com"
+  url = "mailto:accio.arjun@gmail.com?subject=Job Opportunity"
   weight = 1
 
 [params]
