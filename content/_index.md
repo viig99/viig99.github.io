@@ -3,17 +3,15 @@ title: Introduction
 type: docs
 ---
 
-# Applied Machine Learning Engineer
+## **Applied Machine Learning Engineer**
 
-
-## About me
+### **About me**
 
 Hi i am Arjun, an *Applied Machine Learning Engineer* with 11+ years experience in backend engineering and machine learning.
 
 I am passionate about building products with intelligence and i am currently looking for machine learning opportunities.
 
-## Machine Learning Experience
-
+### **Machine Learning Experience**
 I have experience in solving for end to end machine learning problems
 - Robust data collection & cleaning
 - Distributed training on GPU clusters
@@ -23,7 +21,7 @@ I have experience in solving for end to end machine learning problems
 - Monitoring and hard negative mining
 - Model specific inference optimizations (Quantization, Pruning, Torch Dynamo etc)
 
-## Domain Experience
+### **Domain Experience**
 I have worked on various domain problems like:
 - Search & Ranking
 - Cold start recommendations
@@ -33,7 +31,7 @@ I have worked on various domain problems like:
 - NLP (Doc QA, Classification, Entity Recognition) etc
 - Contrastive learning methods
 
-## Links
+### **Links**
 - [Linkedin](https://www.linkedin.com/in/arjunvariar) {{< fab linkedin "#00a0dc" >}}
 - [Github](https://github.com/viig99) {{< fab github "#211f1f" >}}
 - [Twitter](https://twitter.com/vigi99/) {{< fab twitter "#7dbbe6" >}}
