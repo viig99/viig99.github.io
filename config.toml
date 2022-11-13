@@ -14,11 +14,11 @@ sectionPagesMenu = "main"
 [markup.tableOfContents]
   startLevel = 1
 
-# [menu]
-# [[menu.before]]
-#   name = "Home"
-#   url = "/"
-#   weight = 1
+[menu]
+[[menu.after]]
+  name = "Contact Me"
+  url = "mailto:accio.arjun@gmail.com"
+  weight = 1
 
 [params]
   # (Optional, default light) Sets color theme: light, dark or auto.
