@@ -4,7 +4,9 @@ description = ""
 tags = [
     "entity resolution",
     "ers",
-    "ditto"
+    "ditto",
+    "contrastive learning",
+    "sentence embeddings"
 ]
 date = "2023-01-01"
 categories = [
