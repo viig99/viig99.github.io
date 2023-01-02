@@ -16,6 +16,7 @@ title: "Machine Learning Toolkit"
 * Feature importance techniques
 * Contrastive Learning methods like SimCLR, BYOL, SimSiam.
 * Model Debugging & Profiling.
+* Topic models using Probablistic Graphic Model & with Embedding based clustering.
 
 ### **Training**
 * Distributed Training on clusters using OpenMPI + RoCE, Torch RPC
