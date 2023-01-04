@@ -9,7 +9,7 @@ title: "Work Experience"
 {{< columns >}}
 ### **Staff Machine Learning Engineer**
 <--->
-### **Kalepa**
+### [**Kalepa**](https://kalepa.com/)
 <--->
 ### *Apr 2022 - Sep 2022* - *Toronto, CA*
 {{< /columns >}}
@@ -25,7 +25,7 @@ risks on businesses.
 {{< columns >}}
 ### **Principal Machine Learning Engineer**
 <--->
-### **Airtel X-labs**
+### [**Airtel X-labs**](https://careers.airtel.com/)
 <--->
 ### *Sep 2018 - Mar 2022* - *Bangalore, IN*
 {{< /columns >}}
@@ -67,7 +67,7 @@ recognition, clustering, parsing and serving.
 {{< columns >}}
 ### **Machine Learning Engineer**
 <--->
-### **Krowd**
+### [**Krowd**](https://krowdit.com/)
 <--->
 ### *June 2015 - Aug 2017* - *Bangalore, IN*
 {{< /columns >}}
@@ -80,7 +80,7 @@ Scotland).
 {{< columns >}}
 ### **Software Development Engineer**
 <--->
-### **Amazon**
+### [**Amazon**](https://www.amazon.jobs/en/teams/prime-video)
 <--->
 ### *Feb 2013 - Feb 2015* - *Bangalore, IN*
 {{< /columns >}}
@@ -93,7 +93,7 @@ in 10 months to 1m+ customers.
 {{< columns >}}
 ### **Associate Software Engineer**
 <--->
-### **Kony Labs**
+### [**Kony Labs**](https://www.kony.com)
 <--->
 ### *July 2011 - Nov 2012* - *Hyderabad, IN*
 {{< /columns >}}
