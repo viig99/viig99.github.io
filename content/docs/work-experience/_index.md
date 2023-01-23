@@ -17,9 +17,9 @@ title: "Work Experience"
 - Identified and implemented Document Question Answering, as configurable classifiers to analyse various
 risks on businesses.
 - Built and deployed Entity Resolution System using [Unsupervised Contrastive Learning](https://arxiv.org/pdf/2202.02098v2.pdf).
-    * improved top-20 search accuracy from 35% (on ElasticSearch) to 98% for 30m entities.
-    * reduced search latency from 1.5s to 0.3s.
-    * built a scalable system using Postgres, Onnx, Pinecone, fastAPI, and Dockerized deployment.
+    <!-- * improved top-20 search accuracy from 35% (on ElasticSearch) to 98% for 30m entities. -->
+    <!-- * reduced search latency from 1.5s to 0.3s. -->
+    <!-- * built a scalable system using Postgres, Onnx, Pinecone, fastAPI, and Dockerized deployment. -->
 - Interviewed 35+ candidates and developed a system to identify the most suitable candidates for the role.
 
 {{< columns >}}

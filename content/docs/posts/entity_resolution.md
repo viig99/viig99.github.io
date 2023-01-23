@@ -1,4 +1,4 @@
-+++
+<!-- +++
 title = "Entity Resolution using Contrastive Learning"
 description = ""
 tags = [
@@ -40,4 +40,4 @@ With this solution, the top-20 accuracy was around 98%. Heuristics and other bus
 In the end, pinecone was chosen for the embedding search and the search latency was around 100ms for the top 50 among the 50 million embeddings.
 
 ### **Conclusion**
-To conclude, the Entity Resolution Problem was successfully solved by implementing an embedding search using a Sentence embedding model and fine-tuning it with contrastive learning. This solution had a significantly higher accuracy compared to the existing Elastic search-based solution and was able to scale well as the number of entities increased.
+To conclude, the Entity Resolution Problem was successfully solved by implementing an embedding search using a Sentence embedding model and fine-tuning it with contrastive learning. This solution had a significantly higher accuracy compared to the existing Elastic search-based solution and was able to scale well as the number of entities increased. -->
