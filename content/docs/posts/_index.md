@@ -1,4 +1,4 @@
 ---
-title: Machine Learning Usecases
+title: Posts
 bookFlatSection: true
 ---
