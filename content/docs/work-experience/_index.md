@@ -16,11 +16,11 @@ title: "Work Experience"
 
 - Working at Fora, a part of VerticalScope's cloud-based digital platform that operates over 1,200 online communities connecting 110 million active users monthly, fostering their passions, and facilitating knowledge sharing.
 - My role focuses on building healthier and better communities by empowering users with machine learning. Here are some of the tasks I have been responsible for:
-    - Enhancing user experience by leveraging machine learning for communities.
+    <!-- - Enhancing user experience by leveraging machine learning for communities. -->
     - Developing advanced search algorithms to provide users with accurate and personalized results.
     - Optimizing product retrieval for seamless and efficient resource access.
     - Enabling new product discovery within various communities.
-    - Addressing user queries and offering technical support as required.
+    <!-- - Addressing user queries and offering technical support as required. -->
 
 {{< columns >}}
 ### **Staff Machine Learning Engineer**
@@ -30,7 +30,7 @@ title: "Work Experience"
 ### *Apr 2022 - Sep 2022* - *Toronto, CA*
 {{< /columns >}}
 - Enhanced the in-house News Recommendation System using Sentence Embeddings.
-- Recognized the potential and applied Document Question Answering as configurable classifiers for risk analysis on businesses.
+<!-- - Recognized the potential and applied Document Question Answering as configurable classifiers for risk analysis on businesses. -->
 - Constructed and deployed an Entity Resolution System utilizing [Unsupervised Contrastive Learning](https://arxiv.org/pdf/2202.02098v2.pdf).
     <!-- * improved top-20 search accuracy from 35% to 98% for 10^7+ entities. -->
     * Cut down search latency from 1.5s to 0.3s.
@@ -47,24 +47,24 @@ title: "Work Experience"
 - Led the product development of Voicebot engine which powers voice-based queries on the MyAirtel app
 with 10m MAU, in 7 indian languages, does 500k queries/day. (Speech to text, Text to speech, training
 and inference pipelines.)
-    * 900hrs Hindi Speech Dataset Created using [Common Voice](https://github.com/common-voice/common-voice)
-    * Used [wav2letter++](https://github.com/flashlight/wav2letter) Streaming Convnets
-    * Distributed Training on 16 nodes GPU cluster using OpenMP, RoCE, GPUDirect
-    * High performance Bi-directional C++ Grpc Server scaled on k8s
-    * Text to Speech built using tactotron2 + vocgan's
+    <!-- * 900hrs Hindi Speech Dataset Created using [Common Voice](https://github.com/common-voice/common-voice) -->
+    <!-- * Used [wav2letter++](https://github.com/flashlight/wav2letter) Streaming Convnets -->
+    <!-- * Distributed Training on 16 nodes GPU cluster using OpenMP, RoCE, GPUDirect -->
+    <!-- * High performance Bi-directional C++ Grpc Server scaled on k8s -->
+    <!-- * Text to Speech built using tactotron2 + vocgan's -->
     * Voicebot integeration with PBX exchange like Asterix.
     * Presented work at [Nvidia GTC Winter 2020](https://www.nvidia.com/en-us/on-demand/session/gtcfall20-a21644/)
 - Researched and deployed e2e OCR pipeline serving 1.6m docs/day at 96%+ accuracy, used by Airtel for
 its new customer acquisition journey [ICDAR Rank 6](https://bit.ly/35KGMdr "6th Rank on Word Recognition in the wild in ICDAR 2018")
-    * Synthetic data creation for Documented Recognition in the Wild.
-    * EAST + Convnets as Word Localization & Word Recognition Backbone.
-    * Optimized C++ NMS for Zero-copy with pybind11
-    * Dynamic parsers DSL based on clustering step.
+    <!-- * Synthetic data creation for Documented Recognition in the Wild. -->
+    <!-- * EAST + Convnets as Word Localization & Word Recognition Backbone. -->
+    <!-- * Optimized C++ NMS for Zero-copy with pybind11 -->
+    <!-- * Dynamic parsers DSL based on clustering step. -->
 - Building the workflow-orchestration engine which powers the customer support queries on mail / social
 media for Airtel, processes 50k emails/day, built on k8, temporal.io
-    * Reverse Engineered and ported workflows for Sprinklr from scratch.
+    <!-- * Reverse Engineered and ported workflows for Sprinklr from scratch. -->
     * Supported 150 different workflows with ~50 activities running concurrently.
-    * Maintaining Temporal cluster on OKD, with postgres and cassandra.
+    <!-- * Maintaining Temporal cluster on OKD, with postgres and cassandra. -->
 - Hired and led a team of 9 engineers.
 
 {{< columns >}}

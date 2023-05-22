@@ -4,41 +4,39 @@ bookFlatSection: false
 title: "Machine Learning Toolkit"
 ---
 
-## **Machine Learning Toolkit**
+## **Machine Learning Toolkit: Skills and Expertise**
 
 ### **Data Engineering**
-* Building robust unbiased datasets using feature based sampling methods.
-* Generating Synthetic data similar to data distribution.
-* Augmentation techniques for various modalities like vision, speech, nlp.
+* Expertise in building unbiased datasets via feature-based sampling.
+* Proficient in generating synthetic data matching real data distribution.
+* Skilled in augmentation techniques for vision, speech, NLP.
 
 ### **Modelling and Feature Engineering**
-* Knowledge of Convolution, Recurrent and Transformer based models.
-* Feature importance techniques
-* Contrastive Learning methods like SimCLR, BYOL, SimSiam.
-* Model Debugging & Profiling.
-* Topic models using Probablistic Graphic Model & with Embedding based clustering.
+* Comprehensive knowledge of Convolutional, Recurrent, and Transformer-based models.
+* Experience with feature importance techniques.
+* Proficient with Contrastive Learning methods like SimCLR, BYOL, SimSiam.
+* Well-versed in model debugging and profiling.
+* Experienced with topic models using Probabilistic Graphic Models and embedding-based clustering.
 
 ### **Training**
-* Distributed Training on clusters using OpenMPI + RoCE, Torch RPC
-* Pytorch Lightning optimizations.
+* Proficient in distributed training using OpenMPI + RoCE, Torch RPC.
+* Skilled in Pytorch Lightning optimizations.
 
 ### **Calibration**
-* Implicit Calibration techniques like Focal Loss, Maximum Entropy Regularization, Label Smoothing, Random Dropout etc.
-* Explicit Calibration techniques like Isotonic Regression, Patt's scaling
+* Expertise in implicit calibration techniques like Focal Loss, Maximum Entropy Regularization, Label Smoothing, Random Dropout.
+* Experience with explicit calibration techniques like Isotonic Regression, Platt's scaling.
 
 ### **Optimizations**
-* Quantization
-* Model Pruning
-* Distillation
-* ML Ops Fusing techniques like ONNX, TorchDynamo, TVM etc
+* Skilled in model optimizations such as Quantization, Pruning, Distillation.
+* Proficient in ML Ops Fusing techniques like ONNX, TorchDynamo, TVM.
 
 ### **Inference**
-* C++ Inference using ONNX & Drogon
-* Frameworks like Triton, Mosec.
-* Scaling on k8 using OKD.
-* Monitoring & Alerting using Vector.io + Prometheous + Grafana.
+* Expertise in C++ inference using ONNX & Drogon.
+* Experience with frameworks like Triton, Mosec.
+* Skilled in scaling on k8 using OKD.
+* Proficient in monitoring and alerting using Vector.io, Prometheus, Grafana.
 
 ### **Online Monitoring**
-* Hard Negative mining around calibrated threshold region.
-* Sampling and saving hard negatives
-* Monitoring and alerts to detect Model & Data Drifts.
+* Expertise in hard negative mining around calibrated threshold region.
+* Experience with sampling and saving hard negatives.
+* Skilled in detecting and alerting on Model and Data Drifts.
