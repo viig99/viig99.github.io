@@ -9,18 +9,33 @@ title: "Work Experience"
 {{< columns >}}
 ### **Staff Machine Learning Engineer**
 <--->
+### [**Fora**](https://fora.com/)
+<--->
+### *Jan 2023 - Present* - *Toronto, CA*
+{{< /columns >}}
+
+- Working at Fora, a part of VerticalScope's cloud-based digital platform that operates over 1,200 online communities connecting 110 million active users monthly, fostering their passions, and facilitating knowledge sharing.
+- My role focuses on building healthier and better communities by empowering users with machine learning. Here are some of the tasks I have been responsible for:
+    - Enhancing user experience by leveraging machine learning for communities.
+    - Developing advanced search algorithms to provide users with accurate and personalized results.
+    - Optimizing product retrieval for seamless and efficient resource access.
+    - Enabling new product discovery within various communities.
+    - Addressing user queries and offering technical support as required.
+
+{{< columns >}}
+### **Staff Machine Learning Engineer**
+<--->
 ### [**Kalepa**](https://kalepa.com/)
 <--->
 ### *Apr 2022 - Sep 2022* - *Toronto, CA*
 {{< /columns >}}
-- Improved the in-house News Recommendation System using Sentence Embeddings.
-- Identified and implemented Document Question Answering, as configurable classifiers to analyse various
-risks on businesses.
-- Built and deployed Entity Resolution System using [Unsupervised Contrastive Learning](https://arxiv.org/pdf/2202.02098v2.pdf).
-    <!-- * improved top-20 search accuracy from 35% (on ElasticSearch) to 98% for 30m entities. -->
-    <!-- * reduced search latency from 1.5s to 0.3s. -->
-    <!-- * built a scalable system using Postgres, Onnx, Pinecone, fastAPI, and Dockerized deployment. -->
-- Interviewed 35+ candidates and developed a system to identify the most suitable candidates for the role.
+- Enhanced the in-house News Recommendation System using Sentence Embeddings.
+- Recognized the potential and applied Document Question Answering as configurable classifiers for risk analysis on businesses.
+- Constructed and deployed an Entity Resolution System utilizing [Unsupervised Contrastive Learning](https://arxiv.org/pdf/2202.02098v2.pdf).
+    <!-- * improved top-20 search accuracy from 35% to 98% for 10^7+ entities. -->
+    * Cut down search latency from 1.5s to 0.3s.
+    * Crafted a scalable system employing Postgres, Onnx, Pinecone, fastAPI, with Dockerized deployment.
+- Conducted 35+ candidate interviews and developed a system for pinpointing the most suitable candidates for respective roles.
 
 {{< columns >}}
 ### **Principal Machine Learning Engineer**
