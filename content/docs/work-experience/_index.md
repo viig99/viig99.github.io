@@ -86,9 +86,10 @@ recognition, clustering, parsing and serving.
 <--->
 ### *June 2015 - Aug 2017* - *Bangalore, IN*
 {{< /columns >}}
-- Recommendation & ranking for users by clustering restaurants into latent topics space and finding top-n
-using a custom scoring functions built into node.js. Achieved <200ms latency over a set of 1
-million restaurants per user. (Fast heuristic approach for cold start case similar to Netflix).
+- Recommendation & ranking for users by clustering restaurants into latent topics space and recommending fresh restaurants
+built on node.js.
+  - <200ms latency over a set of 1
+million restaurants per user.
 - Loyalty and rewards platform with second price ad bidding for banks (pilot run with Royal Bank of
 Scotland).
 
@@ -112,7 +113,5 @@ in 10 months to 1m+ customers.
 <--->
 ### *July 2011 - Nov 2012* - *Hyderabad, IN*
 {{< /columns >}}
-- Developing an Internal JavaScript single templating based backend/frontend framework for mobile web
-development (Single Page Applications).
-- Writing native platform level code and integrating it with the existing Lua to native code using Foreign
-Function Interface (Objective C, Java).
+- Developed a JavaScript single templating based backend/frontend framework.
+- Integrated native platform level code with existing Lua code using Foreign Function Interface.
