@@ -9,7 +9,7 @@ title: "Work Experience"
 {{< columns >}}
 ### **Staff Machine Learning Engineer**
 <--->
-### [**Fora**](https://fora.com/)
+### [Fora](https://fora.com/)
 <--->
 ### *Jan 2023 - Present* - *Toronto, CA*
 {{< /columns >}}
@@ -25,7 +25,7 @@ title: "Work Experience"
 {{< columns >}}
 ### **Staff Machine Learning Engineer**
 <--->
-### [**Kalepa**](https://kalepa.com/)
+### [Kalepa](https://kalepa.com/)
 <--->
 ### *Apr 2022 - Sep 2022* - *Toronto, CA*
 {{< /columns >}}
@@ -40,7 +40,7 @@ title: "Work Experience"
 {{< columns >}}
 ### **Principal Machine Learning Engineer**
 <--->
-### [**Airtel X-labs**](https://careers.airtel.com/)
+### [Airtel X-labs](https://careers.airtel.com/)
 <--->
 ### *Sep 2018 - Mar 2022* - *Bangalore, IN*
 {{< /columns >}}
@@ -70,7 +70,7 @@ media for Airtel, processes 50k emails/day, built on k8, temporal.io
 {{< columns >}}
 ### **Co-founding Engineer**
 <--->
-### [**AuthME ID Solutions, Acquired by Airtel**](https://analyticsindiamag.com/airtel-ai-startup-authme/)
+### [AuthME ID Solutions, Acquired by Airtel](https://analyticsindiamag.com/airtel-ai-startup-authme/)
 <--->
 ### *Aug 2017 - Sep 2018* - *Bangalore, IN*
 {{< /columns >}}
@@ -82,7 +82,7 @@ recognition, clustering, parsing and serving.
 {{< columns >}}
 ### **Machine Learning Engineer**
 <--->
-### [**Krowd**](https://krowdit.com/)
+### [Krowd](https://krowdit.com/)
 <--->
 ### *June 2015 - Aug 2017* - *Bangalore, IN*
 {{< /columns >}}
@@ -96,7 +96,7 @@ Scotland).
 {{< columns >}}
 ### **Software Development Engineer**
 <--->
-### [**Amazon**](https://www.amazon.jobs/en/teams/prime-video)
+### [Amazon](https://www.amazon.jobs/en/teams/prime-video)
 <--->
 ### *Feb 2013 - Feb 2015* - *Bangalore, IN*
 {{< /columns >}}
@@ -109,7 +109,7 @@ in 10 months to 1m+ customers.
 {{< columns >}}
 ### **Associate Software Engineer**
 <--->
-### [**Kony Labs**](https://www.kony.com)
+### [Kony Labs](https://www.kony.com)
 <--->
 ### *July 2011 - Nov 2012* - *Hyderabad, IN*
 {{< /columns >}}
