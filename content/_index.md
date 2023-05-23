@@ -5,33 +5,36 @@ type: docs
 
 ## **Applied Machine Learning Engineer**
 
-### **About me**
+Welcome! I am Arjun, and I bring over 12 years of experience as an *Applied Machine Learning Engineer*. I am proficient in transforming business requirements into effective machine learning solutions.
 
-Hi i am Arjun, an *Applied Machine Learning Engineer* with 11+ years experience in backend engineering and machine learning.
+### **Machine Learning Proficiency**
 
-I am passionate about building products with intelligence and i am currently looking for machine learning opportunities.
+My expertise in machine learning covers the full project lifecycle:
 
-### **Machine Learning Experience**
-I have experience in solving for end to end machine learning problems
-- Robust data collection & cleaning
-- Distributed training on GPU clusters
-- Building custom model & training recipes on domain specific problems
-- Model calibration
-- Scalable and low latency inference pipelines in C++ / python (GRPC, k8)
-- Monitoring and hard negative mining
-- Model specific inference optimizations (Quantization, Pruning, Torch Dynamo etc)
+- Data Collection & Cleaning: Building robust datasets for machine learning models.
+- Distributed Training: Effectively using GPU clusters for model training.
+- Custom Model Development: Creating bespoke models & training methods for specific problems.
+- Model Calibration: Fine-tuning models to improve their effectiveness.
+- Inference Pipelines: Building scalable, low latency pipelines in C++ / Python (using GRPC, k8).
+- Negative Mining: Implementing hard negative mining for ongoing model improvement.
+- Model Optimization: Applying methods like Quantization, Pruning, Torch Dynamo for optimal performance.
 
-### **Domain Experience**
-I have worked on various domain problems like:
+### **Domain Expertise**
+
+I have experience applying machine learning solutions across a broad range of domains:
+
 - Search & Ranking
-- Cold start recommendations
-- Constraint based optimization
-- Speech (Speech to text, text to speech)
-- Vision (Segmentation, Classification, OCR)
-- NLP (Doc QA, Classification, Entity Recognition) etc
-- Contrastive learning methods
+- Cold Start Recommendations
+- Constraint-based Optimization
+- Speech Processing (Speech-to-text, Text-to-speech)
+- Computer Vision (Segmentation, Classification, OCR)
+- Natural Language Processing (Document QA, Classification, Entity Recognition)
+- Contrastive Learning Methods
 
-### **Links**
+### **Contact Information**
+
+I am currently exploring new opportunities in machine learning. Let's connect and discuss how my skills can benefit your organization.
+
 - [Linkedin](https://www.linkedin.com/in/arjunvariar) {{< fab linkedin "#00a0dc" >}}
 - [Github](https://github.com/viig99) {{< fab github "#211f1f" >}}
 - [Twitter](https://twitter.com/vigi99/) {{< fab twitter "#7dbbe6" >}}
