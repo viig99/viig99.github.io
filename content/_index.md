@@ -5,7 +5,7 @@ type: docs
 
 ## **Applied Machine Learning Engineer**
 
-Welcome! I am Arjun, and I bring over 12 years of experience as an *Applied Machine Learning Engineer*. I am proficient in transforming business requirements into effective machine learning solutions.
+Welcome! I am Arjun, and I bring over 14 years of experience as an *Applied Machine Learning Engineer*. I am proficient in transforming business requirements into effective machine learning solutions.
 
 ### **Machine Learning Proficiency**
 
