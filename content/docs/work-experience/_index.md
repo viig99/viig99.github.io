@@ -9,7 +9,7 @@ title: "Work Experience"
 {{< columns >}}
 ### **Staff Machine Learning Engineer**
 <--->
-### [Fora](https://fora.com/)
+### [VerticalScope Inc.](https://www.verticalscope.com/)
 <--->
 ### *Jan 2023 - Present* - *Toronto, CA*
 {{< /columns >}}
