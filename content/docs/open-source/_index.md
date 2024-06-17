@@ -13,6 +13,20 @@ title: "Open Source Contributions"
 Python library for Spelling correction based on [SymSpell](https://github.com/wolfgarbe/SymSpell) written in C++ and exposed to python via pybind11.
 
 {{< columns >}}
+### [Comparing Contrastive losses on Vision & NLP](https://github.com/viig99/ContrastiveLearningLossComparison)
+<--->
+[![star this repo](https://img.shields.io/github/stars/viig99/ContrastiveLearningLossComparison?style=flat-square)](https://github.com/viig99/ContrastiveLearningLossComparison)
+{{< /columns >}}
+Comparing performance of different InfoNCE type losses used in contrastive learning.
+
+{{< columns >}}
+### [Windy Lunar Lander Env](https://github.com/viig99/rl-experiments)
+<--->
+[![star this repo](https://img.shields.io/github/stars/viig99/rl-experiments?style=flat-square)](https://github.com/viig99/rl-experiments)
+{{< /columns >}}
+Exploring Reinforcement Learning algorithms on customized Lunar Lander environment with dynamic realistic wind vectors by extending the gym environment.
+
+{{< columns >}}
 ### [Blaze](https://github.com/SABER-labs/Drogon-torch-serve)
 <--->
 [![star this repo](https://img.shields.io/github/stars/SABER-labs/Drogon-torch-serve?style=flat-square)](https://github.com/SABER-labs/Drogon-torch-serve)
