@@ -14,7 +14,7 @@ categories = [
     "Entity Resolution",
 ]
 menu = "main"
-draft = true
+draft = false
 +++
 
 ## **Introduction to Entity Resolution**

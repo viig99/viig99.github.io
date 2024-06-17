@@ -14,7 +14,7 @@ categories = [
     "Instruction fine-tuning"
 ]
 menu = "main"
-draft = true
+draft = false
 +++
 
 ## **The Power of Supervised Fine-Tuning in Large Language Models: An In-depth Analysis**
