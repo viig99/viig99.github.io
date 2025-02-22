@@ -42,6 +42,8 @@ My goal was to parse the data, clean it, cluster salary ranges by experience, an
    - Labeled each cluster with the sample size for clarity.
 
 ## **Output**
-![Salary Distribution](/resources/_gen/images/salary_histogram.png)
+{{ with .Resources.GetMatch "images/salary_histogram.png" }}
+  <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}">
+{{ end }}
 
 
