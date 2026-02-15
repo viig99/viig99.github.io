@@ -7,15 +7,25 @@ title: "Work Experience"
 ## **Work Experience**
 
 {{< columns >}}
+### **Senior Applied ML Engineer**
+<--->
+### [Shopify](https://www.shopify.com/)
+<--->
+### *Sep 2025 - Present* - *Toronto, CA*
+{{< /columns >}}
+
+- Working on merchant foundation models.
+
+{{< columns >}}
 ### **Staff Machine Learning Engineer**
 <--->
 ### [VerticalScope Inc.](https://www.verticalscope.com/)
 <--->
-### *Jan 2023 - Present* - *Toronto, CA*
+### *Jan 2023 - Jun 2025* - *Toronto, CA*
 {{< /columns >}}
 
-- Working at Fora, a part of VerticalScope's cloud-based digital platform that operates over 1,200 online communities connecting 110 million active users monthly, fostering their passions, and facilitating knowledge sharing.
-- My role focuses on building healthier and better communities by empowering users with machine learning. Here are some of the tasks I have been responsible for:
+- Worked at Fora, a part of VerticalScope's cloud-based digital platform that operates over 1,200 online communities connecting 110 million active users monthly, fostering their passions, and facilitating knowledge sharing.
+- My role focused on building healthier and better communities by empowering users with machine learning. Here are some of the tasks I was responsible for:
     - Empowering communities with machine learning to enhance user experience.
     - Personalized Feed Recommendation's, Newsletter growth, mobile notifications to all communities.
     - Developing advanced search algorithms for accurate, tailored results.
