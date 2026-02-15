@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Large-Scale ML on /home/vigi99</title><link>https://viig99.github.io/tags/large-scale-ML/</link><description>Recent content in Large-Scale ML on /home/vigi99</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sun, 15 Feb 2026 18:13:08 -0500</lastBuildDate><atom:link href="https://viig99.github.io/tags/large-scale-ML/index.xml" rel="self" type="application/rss+xml"/><item><title>FlexAttention HSTU at 500M Events: RQ Tokens, QR Embeddings, and 1D Biases</title><link>https://viig99.github.io/docs/posts/hstu-for-yambda/</link><pubDate>Sun, 15 Feb 2026 00:00:00 +0000</pubDate><guid>https://viig99.github.io/docs/posts/hstu-for-yambda/</guid><description>&lt;h2 id="executive-summary"&gt;
+ Executive Summary
+ &lt;a class="anchor" href="#executive-summary"&gt;#&lt;/a&gt;
+&lt;/h2&gt;
+&lt;p&gt;This post documents the architecture choices that made an HSTU-style recommender tractable at Yambda scale (roughly 500M events and 9.4M item IDs):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Jagged, block-masked attention with &lt;a href="https://pytorch.org/docs/stable/nn.attention.flex_attention.html" target="_blank" rel="noopener" &gt;PyTorch FlexAttention&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Residual quantization (RQ) token prediction instead of a giant item-ID softmax&lt;/li&gt;
+&lt;li&gt;Quotient-remainder (QR) embeddings for large sparse categorical spaces&lt;/li&gt;
+&lt;li&gt;On-the-fly 1D attention bias terms (time, duration, organic) instead of dense &lt;code&gt;[S, S]&lt;/code&gt; bias tensors&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://arxiv.org/abs/2108.12409" target="_blank" rel="noopener" &gt;ALiBi&lt;/a&gt; positional bias instead of learned position embeddings&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The core pattern is simple: preserve useful inductive bias, but make every scaling decision memory-aware.&lt;/p&gt;</description></item></channel></rss>
