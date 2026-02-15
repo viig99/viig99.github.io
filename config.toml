@@ -2,6 +2,7 @@ googleAnalytics = 'G-55K4J76G9F'
 baseURL = 'https://viig99.github.io'
 languageCode = 'en-us'
 title = '/home/vigi99'
+theme = 'hugo-book'
 
 disablePathToLower = true
 enableGitInfo = true
