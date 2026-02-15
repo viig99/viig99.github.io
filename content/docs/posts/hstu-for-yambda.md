@@ -23,7 +23,9 @@ draft = false
 
 ## Executive Summary
 
-This post documents the architecture choices that made an HSTU-style recommender tractable at Yambda scale (roughly 500M events and 9.4M item IDs):
+At Yambda scale (about 500M events and 9.4M items), models rarely break because one idea is bad. They break when many small, expensive defaults pile up.
+
+This post is the story of the choices that kept an HSTU-style recommender trainable:
 
 - Jagged, block-masked attention with [PyTorch FlexAttention](https://pytorch.org/docs/stable/nn.attention.flex_attention.html)
 - Residual quantization (RQ) token prediction instead of a giant item-ID softmax
@@ -31,18 +33,18 @@ This post documents the architecture choices that made an HSTU-style recommender
 - On-the-fly 1D attention bias terms (time, duration, organic) instead of dense `[S, S]` bias tensors
 - [ALiBi](https://arxiv.org/abs/2108.12409) positional bias instead of learned position embeddings
 
-The core pattern is simple: preserve useful inductive bias, but make every scaling decision memory-aware.
+The throughline is simple: keep the inductive bias, cut the dense and quadratic costs.
 
-## System Constraints
+## Why Yambda Forces Architectural Discipline
 
-The design was driven by four hard constraints:
+Four constraints shaped every design decision:
 
 1. User histories are jagged, not fixed-length.
 2. Item space is large enough that a full output projection is expensive.
 3. Side metadata is sparse and partially missing.
 4. Attention biasing must not materialize quadratic tensors.
 
-Those constraints forced us to optimize for throughput and memory first, while keeping model quality stable.
+At this scale, architecture is mostly cost control. So we optimized for memory and throughput first, then validated that quality still held.
 
 ## Architecture Overview
 
@@ -58,9 +60,9 @@ flowchart LR
     H --> I[Logits S x 8 x 1024]
 {{< /mermaid >}}
 
-Key point: we do not model a direct `item_id` distribution at the output layer. We model codebooks.
+The pivotal move is at the output: we do not model a direct `item_id` distribution. We model codebooks.
 
-## Why RQ Outputs Instead of Item-ID Softmax
+## Decision 1: Replace Item-ID Softmax with RQ Outputs
 
 With ~9.4M items, a direct head looks like:
 
@@ -68,13 +70,13 @@ With ~9.4M items, a direct head looks like:
 Linear(D -> 9,400,000)
 ```
 
-That is expensive in memory bandwidth and optimizer state. Instead, we train an 8-level residual quantizer over item embeddings and predict discrete code indices:
+That is expensive in parameters, optimizer state, and memory bandwidth. Instead, we train an 8-level residual quantizer over item embeddings and predict discrete code indices:
 
 ```text
 8 x Linear(D -> 1024)
 ```
 
-Benefits:
+What this changes in practice:
 
 - Smaller output parameterization and optimizer footprint
 - Better fit for ANN retrieval over decoded embeddings
@@ -82,9 +84,9 @@ Benefits:
 
 Reference: [FAISS](https://github.com/facebookresearch/faiss) for vector retrieval.
 
-## Avoiding O(S^2) Bias Materialization
+## Decision 2: Keep Attention Priors, Drop O(S^2) Bias Tensors
 
-A common failure mode is building dense attention bias matrices for time, position, or feature-specific priors. At long sequence lengths this becomes unnecessary overhead.
+A common failure mode is precomputing dense bias matrices for time, position, and feature priors. At longer sequence lengths, that burns memory for very little return.
 
 In FlexAttention, we apply score modifiers lazily:
 
@@ -108,9 +110,9 @@ flowchart TD
     E --> F[Final attention score]
 {{< /mermaid >}}
 
-## Why ALiBi Here
+## Decision 3: Use ALiBi for Position Bias
 
-Learned positional embeddings are workable, but ALiBi is a better fit for this setup:
+Learned positional embeddings work, but ALiBi fits this setup better:
 
 - No position-embedding table
 - Relative bias available in every layer
@@ -118,7 +120,7 @@ Learned positional embeddings are workable, but ALiBi is a better fit for this s
 
 Reference: [Train Short, Test Long: ALiBi](https://arxiv.org/abs/2108.12409).
 
-## QR Embeddings for Large Categorical Spaces
+## Decision 4: Compress Large Categorical Spaces with QR Embeddings
 
 For high-cardinality IDs (for example, artist IDs), we use quotient-remainder factorization:
 
@@ -128,11 +130,11 @@ embed(id) = embed_q(id // R) + embed_r(id % R)
 
 With `R = 1024`, this substantially reduces table size while preserving enough representational capacity for ranking.
 
-This is a practical tradeoff: a small quality hit is acceptable if it unlocks larger batches and faster iteration.
+This tradeoff is intentional: a modest representation loss is acceptable if it unlocks larger batches and faster iteration.
 
-## Sparse IDs and Missing Content Embeddings
+## Handling Sparse IDs and Missing Content Embeddings
 
-Observed properties in this setup:
+What we observed:
 
 - Item ID space can extend to ~9.4M
 - Only a subset has precomputed content embeddings
@@ -144,7 +146,7 @@ What we did:
 - Route unknown/missing entries to a deterministic all-zero RQ code pattern
 - Let the model learn a stable fallback behavior for unknown content
 
-This avoided huge dense lookup tensors and prevented nondeterministic behavior.
+This avoids huge dense lookup tensors and keeps behavior deterministic.
 
 ## Jagged Batching with Block Masks
 
@@ -158,7 +160,7 @@ flowchart LR
     D --> E[Block mask: no cross-user attention]
 {{< /mermaid >}}
 
-This gives better accelerator utilization than naive per-user padding.
+This improves accelerator utilization versus naive per-user padding while preserving exact user boundaries.
 
 ## Early Signal
 
@@ -171,12 +173,12 @@ This gives better accelerator utilization than naive per-user padding.
 - Absolute gain: `+0.0884`
 - Relative improvement from first logged point: about `2.2x`
 
-This is still an intermediate training view; full offline ranking evaluation should include `Hit@K`, `MRR`, and `NDCG` over retrieved candidates.
+This is still an intermediate training signal. Final offline validation should report `Hit@K`, `MRR`, and `NDCG` on retrieved candidates.
 For boundary-case debugging during retrieval-stage evaluation, see [The Role of Negative Mining in Machine Learning](./hard_negatives.md).
 
-## Tradeoffs and Failure Modes
+## What Can Break
 
-Staff-level review usually focuses on what can go wrong. The biggest risks here are:
+The main failure modes are straightforward:
 
 1. Quantization bottleneck. If RQ codebooks are underfit, retrieval quality saturates early.
 2. Bucket design brittleness. Bad time/duration buckets quietly cap model quality.
@@ -214,11 +216,11 @@ Recommended guardrails:
 
 ## Closing
 
-The architecture scales because it refuses expensive defaults:
+At Yambda scale, disciplined defaults win:
 
-- No dense attention bias matrices
-- No giant item softmax
-- No full-width categorical embedding tables where compression works
-- No padding-heavy batching
+- no dense attention bias matrices,
+- no giant item softmax,
+- no full-width categorical tables when compression is enough,
+- no padding-heavy batching.
 
-In short: keep the inductive bias, remove the quadratic and dense bottlenecks.
+That is the full pattern: preserve signal, strip avoidable cost.
