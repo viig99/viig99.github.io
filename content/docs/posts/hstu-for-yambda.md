@@ -172,6 +172,7 @@ This gives better accelerator utilization than naive per-user padding.
 - Relative improvement from first logged point: about `2.2x`
 
 This is still an intermediate training view; full offline ranking evaluation should include `Hit@K`, `MRR`, and `NDCG` over retrieved candidates.
+For boundary-case debugging during retrieval-stage evaluation, see [The Role of Negative Mining in Machine Learning](./hard_negatives.md).
 
 ## Tradeoffs and Failure Modes
 
@@ -188,6 +189,7 @@ Recommended guardrails:
 - Track calibration and recall at retrieval depth
 - Monitor unknown-code frequency by segment
 - Keep one non-quantized baseline for regression detection
+- For retrieval-quality diagnostics at scale, combine this with [Entity Resolution using Contrastive Learning](./entity_resolution.md)-style candidate analysis.
 
 ## Next Experiments
 
@@ -203,6 +205,12 @@ Recommended guardrails:
 - [ALiBi paper](https://arxiv.org/abs/2108.12409)
 - [FAISS](https://github.com/facebookresearch/faiss)
 - [Mermaid](https://mermaid.js.org/)
+
+## Related Posts
+
+- [The Role of Negative Mining in Machine Learning](./hard_negatives.md)
+- [Entity Resolution using Contrastive Learning](./entity_resolution.md)
+- [Machine Learning Engineer Roadmap](./ml_engineer_guidelines.md)
 
 ## Closing
 
