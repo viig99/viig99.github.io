@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Chess on /home/vigi99</title><link>https://viig99.github.io/categories/Chess/</link><description>Recent content in Chess on /home/vigi99</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Fri, 27 Feb 2026 19:23:59 -0500</lastBuildDate><atom:link href="https://viig99.github.io/categories/Chess/index.xml" rel="self" type="application/rss+xml"/><item><title>Building a Chess Bot with HSTU: From Lichess Pretraining to Value Search</title><link>https://viig99.github.io/docs/posts/imba-chess/</link><pubDate>Fri, 27 Feb 2026 00:00:00 +0000</pubDate><guid>https://viig99.github.io/docs/posts/imba-chess/</guid><description>&lt;h2 id="executive-summary"&gt;Executive Summary&lt;a class="anchor" href="#executive-summary"&gt;#&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;This is a running journal of &lt;code&gt;imba-chess&lt;/code&gt;, a personal research project to build a compact (20–30M parameter) chess bot entirely from supervised pretraining on Lichess games, without any game-tree search engine to begin with.&lt;/p&gt;
-&lt;p&gt;The journey so far:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Chess on /home/vigi99</title><link>https://viig99.github.io/categories/Chess/</link><description>Recent content in Chess on /home/vigi99</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Fri, 27 Feb 2026 19:31:21 -0500</lastBuildDate><atom:link href="https://viig99.github.io/categories/Chess/index.xml" rel="self" type="application/rss+xml"/><item><title>Building a Chess Bot with HSTU: From Lichess Pretraining to Value Search</title><link>https://viig99.github.io/docs/posts/imba-chess/</link><pubDate>Fri, 27 Feb 2026 00:00:00 +0000</pubDate><guid>https://viig99.github.io/docs/posts/imba-chess/</guid><description>&lt;h2 id="executive-summary"&gt;Executive Summary&lt;a class="anchor" href="#executive-summary"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;This post is my running build log for &lt;code&gt;imba-chess&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Right now, the checked-in model is about &lt;strong&gt;12.6M parameters&lt;/strong&gt;.&lt;br&gt;
+My original target in the notes was 20–30M, but I am still iterating toward that.&lt;/p&gt;
+&lt;p&gt;What I have done so far:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Adapted HSTU-style causal sequence modeling from recommender systems to chess.&lt;/li&gt;
 &lt;li&gt;Trained next-move prediction (policy head) on high-Elo Lichess game data.&lt;/li&gt;
@@ -10,4 +12,4 @@
 &lt;li&gt;Implemented depth-2 policy-pruned minimax search on top.&lt;/li&gt;
 &lt;li&gt;Defined a Stockfish ladder evaluation pipeline for reproducible strength measurement.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;The throughline is: &lt;strong&gt;treat each chess ply as a structured event in a sequence, the same way you would model user behavior&lt;/strong&gt;.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;My core framing is: &lt;strong&gt;a chess game is a structured event sequence&lt;/strong&gt;.&lt;/p&gt;</description></item></channel></rss>
