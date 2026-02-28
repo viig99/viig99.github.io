@@ -23,12 +23,15 @@ menu = "main"
 draft = false
 +++
 
-## Executive Summary
+## Build Log Snapshot
 
 This post is my running build log for `imba-chess`.
 
 Right now, the checked-in model is about **12.6M parameters**.  
 My original target in the notes was 20–30M, but I am still iterating toward that.
+
+The project is intentionally built to run on constrained hardware.  
+Most of this training/dev loop has been on my **8GB RTX 3070 laptop**.
 
 What I have done so far:
 
