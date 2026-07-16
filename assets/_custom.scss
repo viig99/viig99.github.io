@@ -26,19 +26,22 @@
   --border: oklch(83% 0.028 115);
   --border-strong: oklch(62% 0.045 132);
 
-  // Ink — botanical, warm near-black green
-  --ink: oklch(24% 0.052 152);
-  --ink-muted: oklch(40% 0.045 142);
-  --ink-faint: oklch(48% 0.040 138);
+  // Ink — warm neutral bark (low chroma, NOT green) so the accents can breathe
+  --ink: oklch(27% 0.024 52);
+  --ink-muted: oklch(44% 0.028 50);
+  --ink-faint: oklch(55% 0.030 52);
 
-  // Accents — leaf, terracotta, honey, plum
-  --primary: oklch(47% 0.13 140);
-  --primary-strong: oklch(42% 0.135 142);
-  --honey: oklch(74% 0.155 80);
-  --honey-deep: oklch(63% 0.165 66);
-  --terracotta: oklch(54% 0.14 46);
-  --plum: oklch(48% 0.15 348);
-  --leaf: oklch(52% 0.13 140);
+  // Accents — a green + maroon duotone, sparked with honey + terracotta + plum.
+  // Role split: green = links/interactive, maroon = headings, honey = rules/quotes.
+  --primary: oklch(46% 0.14 148);       // leaf green — links, active nav
+  --primary-strong: oklch(40% 0.14 146);
+  --maroon: oklch(40% 0.14 18);         // deep maroon/wine — headings
+  --maroon-strong: oklch(33% 0.14 18);
+  --honey: oklch(72% 0.16 78);
+  --honey-deep: oklch(62% 0.17 64);
+  --terracotta: oklch(55% 0.16 42);
+  --plum: oklch(46% 0.16 350);
+  --leaf: oklch(50% 0.14 145);
 
   // hugo-book required vars
   --body-background: var(--paper);
@@ -97,6 +100,8 @@
   // Accents — lifted for dark
   --primary: oklch(76% 0.15 145);
   --primary-strong: oklch(83% 0.14 146);
+  --maroon: oklch(74% 0.13 24);
+  --maroon-strong: oklch(82% 0.12 22);
   --honey: oklch(82% 0.14 84);
   --honey-deep: oklch(75% 0.15 70);
   --terracotta: oklch(74% 0.14 48);
@@ -195,7 +200,9 @@ body {
 /* ───────────────────────────  SIDEBAR MENU  ─────────────────────── */
 
 .book-menu {
+  // Left zone: a distinct warm panel, deeper than the reading surface.
   .book-menu-content {
+    background: color-mix(in oklch, var(--surface) 70%, var(--paper));
     border-inline-end: 1px solid var(--border);
   }
 
@@ -206,7 +213,7 @@ body {
     color: var(--ink-muted);
     transition: color 0.15s ease-in-out, background 0.15s ease-in-out;
 
-    &:hover { color: var(--ink); background: var(--surface); opacity: 1; }
+    &:hover { color: var(--ink); background: var(--surface-2); opacity: 1; }
   }
 
   // Active page: leaf-green chip with an accent spine.
@@ -224,20 +231,33 @@ body {
 /* ───────────────────────────  TOC (right)  ──────────────────────── */
 
 .book-toc {
+  // Right zone: a mono "code minimap", visibly different from menu + body.
+  font-family: var(--font-mono);
   font-size: var(--font-size-smaller);
+  letter-spacing: -0.01em;
 
   .book-toc-content {
     border-inline-start: 1px solid var(--border);
     padding-inline-start: 1rem;
+
+    // code-comment lead-in
+    &::before {
+      content: "// on this page";
+      display: block;
+      margin-bottom: 0.85em;
+      color: var(--honey-deep);
+      font-size: 0.92em;
+    }
   }
 
-  nav > ul > li:first-child {
-    font-weight: 600;
-    color: var(--ink-muted);
+  // Honey guide rails on nested levels.
+  nav ul ul {
+    border-inline-start: 1px solid color-mix(in oklch, var(--honey) 32%, transparent);
   }
 
   a {
     color: var(--ink-faint);
+    transition: color 0.15s ease-in-out;
     &:hover { color: var(--primary); opacity: 1; }
   }
 }
@@ -253,15 +273,25 @@ body {
 // Young Serif ships one organic weight — keep headings roman at 400, lean on size for hierarchy.
 
 .markdown {
-  h1, h2, h3, h4, h5, h6 { font-weight: 400; }
+  h1, h2, h3, h4, h5, h6 { font-weight: 400; color: var(--maroon); }
 
-  // Hairline under h2 sections the reading column without an eyebrow label.
+  // Many older posts write headings as `## **Bold**`; the bold must inherit the
+  // heading's maroon + single weight, not the body-bold ink colour below.
+  h1 strong, h2 strong, h3 strong, h4 strong, h5 strong, h6 strong,
+  h1 b, h2 b, h3 b, h4 b, h5 b, h6 b {
+    color: inherit;
+    font-weight: inherit;
+  }
+
+  // Colourful gradient rule painted under h2 — maroon into honey.
   h2 {
     padding-bottom: 0.3em;
-    border-bottom: 1px solid var(--border);
+    background: linear-gradient(90deg, var(--maroon) 0%, var(--honey) 55%, transparent 100%)
+      no-repeat left bottom / 100% 2px;
   }
   h2 .anchor, h3 .anchor { color: var(--primary); }
 
+  // Bold stays warm-neutral so it emphasises without turning everything maroon.
   strong, b { color: var(--ink); font-weight: 600; }
 
   hr {
@@ -270,10 +300,11 @@ body {
     background: linear-gradient(
       90deg,
       var(--primary) 0%,
-      var(--honey) 48%,
-      transparent 92%
+      var(--honey) 42%,
+      var(--maroon) 78%,
+      transparent 100%
     );
-    opacity: 0.75;
+    opacity: 0.85;
   }
 }
 
@@ -282,9 +313,9 @@ body {
 .markdown {
   code {
     font-size: 0.85em;
-    background: color-mix(in oklch, var(--primary) 9%, var(--surface));
-    border: 1px solid var(--border);
-    color: color-mix(in oklch, var(--primary-strong) 70%, var(--ink));
+    background: color-mix(in oklch, var(--terracotta) 12%, var(--surface));
+    border: 1px solid color-mix(in oklch, var(--terracotta) 24%, var(--border));
+    color: color-mix(in oklch, var(--terracotta) 82%, var(--ink));
     border-radius: 0.3rem;
     padding: 0.12em 0.36em;
   }
@@ -348,8 +379,8 @@ body {
 /* ───────────────────────────  BLOCKQUOTE  ───────────────────────── */
 
 .markdown blockquote {
-  border-inline-start: 3px solid var(--primary);
-  background: color-mix(in oklch, var(--primary) 7%, transparent);
+  border-inline-start: 3px solid var(--honey-deep);
+  background: color-mix(in oklch, var(--honey) 13%, transparent);
   padding: 0.7em 1em;
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
   color: var(--ink-muted);
@@ -363,8 +394,8 @@ body {
   overflow: hidden;
 
   tr th {
-    background: color-mix(in oklch, var(--primary) 12%, var(--surface));
-    color: var(--ink);
+    background: color-mix(in oklch, var(--honey) 20%, var(--surface));
+    color: var(--maroon-strong);
     font-weight: 600;
     border-color: var(--border);
   }
@@ -395,8 +426,8 @@ body {
     transform: translateY(-2px);
   }
 
-  h2 { margin-top: 0; border-bottom: 0; padding-bottom: 0; }
-  h2 a { color: var(--ink); &:hover { color: var(--primary); } }
+  h2 { margin-top: 0; background: none; padding-bottom: 0; }
+  h2 a { color: var(--maroon); &:hover { color: var(--primary); } }
 
   .book-post-content { color: var(--ink-muted); }
 }
