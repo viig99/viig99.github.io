@@ -3,39 +3,50 @@ title: Introduction
 type: docs
 ---
 
-## **Applied Machine Learning Engineer**
+## Applied Machine Learning Engineer
 
-Welcome! I am Arjun, and I bring over 14 years of experience as an *Applied Machine Learning Engineer*. I am proficient in transforming business requirements into effective machine learning solutions.
+Hi, I'm **Arjun** — an Applied Machine Learning Engineer with 14+ years of turning fuzzy business problems into shipped ML systems. I like working end-to-end: data and sampling, modelling, distributed training, and low-latency `C++` / `Python` inference at scale.
 
-### **Machine Learning Proficiency**
+I'm currently a **Senior Applied ML Engineer at [Shopify](https://www.shopify.com/)**, working on merchant foundation models.
 
-My expertise in machine learning covers the full project lifecycle:
+## Machine Learning Proficiency
 
-- Data Collection & Cleaning: Building robust datasets for machine learning models.
-- Distributed Training: Effectively using GPU clusters for model training.
-- Custom Model Development: Creating bespoke models & training methods for specific problems.
-- Model Calibration: Fine-tuning models to improve their effectiveness.
-- Inference Pipelines: Building scalable, low latency pipelines in C++ / Python (using GRPC, k8).
-- Negative Mining: Implementing hard negative mining for ongoing model improvement.
-- Model Optimization: Applying methods like Quantization, Pruning, Torch Dynamo for optimal performance.
+My work covers the full project lifecycle — and I keep it sharp by building things end-to-end:
 
-### **Domain Expertise**
+- **Data & sampling** — unbiased datasets via feature-based sampling, hard-negative mining, and synthetic data that matches the real distribution.
+- **Modelling** — `Convolutional`, `Recurrent`, and `Transformer` architectures; contrastive learning (`SimCLR`, `BYOL`, `SimSiam`); and sequential models.
+- **Distributed training** — GPU clusters over `OpenMPI + RoCE`, `Torch RPC`, and `PyTorch Lightning`.
+- **Calibration** — `Focal Loss`, label smoothing, isotonic regression, and Platt scaling.
+- **Optimization** — quantization, pruning, distillation; graph fusing with `ONNX`, `TorchDynamo`, and `TVM`.
+- **Inference** — scalable, low-latency `C++` serving (`ONNX`, `Drogon`, `Triton`) on `k8s`.
 
-I have experience applying machine learning solutions across a broad range of domains:
+> [!TIP]
+> The fastest way I learn a new technique is to build it end-to-end. The projects below are where that happens — and what they taught me tends to show up in production soon after.
 
-- Search & Ranking
-- Cold Start Recommendations
+## Recent Explorations
+
+A few things I've been building lately, and what each one explores:
+
+- **[imba-chess](https://github.com/viig99/imba-chess)** — a high-Elo chess bot that ports `HSTU` sequential transformers from recommender systems to chess: policy imitation from Lichess games, a `WDL` value head, and depth-2 policy-pruned minimax search. It probes how far sequence models transfer from recsys to strategic games. Full build log: [Building a Chess Bot with HSTU]({{< relref "/docs/posts/imba-chess" >}}).
+- **[muvfde](https://github.com/viig99/muvfde)** — fixed-dimensional embeddings for multi-vector representations (Google Research's `MUVERA`), with a `C++` core exposed to Python via `nanobind` and shipped [on PyPI](https://pypi.org/project/muvfde/). An exercise in trading model size for retrieval latency using the right encoding.
+- **[Comparing Online Hyperopts](https://github.com/viig99/Comparing-Online-Hyperopts)** — a benchmark of online hyper-parameter optimization methods across sampling efficiency, latency, and ease of implementation. A reminder that "best" depends entirely on your compute and latency budget.
+
+## Domain Expertise
+
+I've shipped machine learning across a broad range of problems:
+
+- Search & Ranking · Cold-start Recommendations
 - Constraint-based Optimization
-- Speech Processing (Speech-to-text, Text-to-speech)
+- Speech Processing (Speech-to-Text, Text-to-Speech)
 - Computer Vision (Segmentation, Classification, OCR)
 - Natural Language Processing (Document QA, Classification, Entity Recognition)
-- Contrastive Learning Methods
+- Contrastive Learning methods
 
-### **Contact Information**
+## Get in Touch
 
-I am currently exploring new opportunities in machine learning. Let's connect and discuss how my skills can benefit your organization.
+I'm always up for a good ML problem — let's talk.
 
-- [Linkedin](https://www.linkedin.com/in/arjunvariar) {{< fab linkedin "#00a0dc" >}}
-- [Github](https://github.com/viig99) {{< fab github "#211f1f" >}}
+- [LinkedIn](https://www.linkedin.com/in/arjunvariar) {{< fab linkedin "#00a0dc" >}}
+- [GitHub](https://github.com/viig99) {{< fab github "#211f1f" >}}
 - [Twitter](https://twitter.com/vigi99/) {{< fab twitter "#7dbbe6" >}}
 - [Email](mailto:accio.arjun@gmail.com) {{< far envelope "#EA4335" >}}

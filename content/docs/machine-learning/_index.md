@@ -4,39 +4,50 @@ bookFlatSection: false
 title: "Machine Learning Toolkit"
 ---
 
-## **Machine Learning Toolkit: Skills and Expertise**
+## Machine Learning Toolkit
 
-### **Data Engineering**
-* Expertise in building unbiased datasets via feature-based sampling.
-* Proficient in generating synthetic data matching real data distribution.
-* Skilled in augmentation techniques for vision, speech, NLP.
+The techniques and tools I reach for across the ML lifecycle — from raw data all the way to a monitored production model.
 
-### **Modelling and Feature Engineering**
-* Comprehensive knowledge of Convolutional, Recurrent, and Transformer-based models.
-* Experience with feature importance techniques.
-* Proficient with Contrastive Learning methods like SimCLR, BYOL, SimSiam.
-* Well-versed in model debugging and profiling.
-* Experienced with topic models using Probabilistic Graphic Models and embedding-based clustering.
+> [!NOTE]
+> This is the practitioner's cut of my [Machine Learning Proficiency](/). Every area below is something I've shipped, not just read about.
 
-### **Training**
-* Proficient in distributed training using OpenMPI + RoCE, Torch RPC.
-* Skilled in Pytorch Lightning optimizations.
+## Data Engineering
 
-### **Calibration**
-* Expertise in implicit calibration techniques like Focal Loss, Maximum Entropy Regularization, Label Smoothing, Random Dropout.
-* Experience with explicit calibration techniques like Isotonic Regression, Platt's scaling.
+- Building unbiased datasets via feature-based sampling.
+- Generating synthetic data that matches the real data distribution.
+- Augmentation techniques for `vision`, `speech`, and `NLP`.
 
-### **Optimizations**
-* Skilled in model optimizations such as Quantization, Pruning, Distillation.
-* Proficient in ML Ops Fusing techniques like ONNX, TorchDynamo, TVM.
+## Modelling & Feature Engineering
 
-### **Inference**
-* Expertise in C++ inference using ONNX & Drogon.
-* Experience with frameworks like Triton, Mosec.
-* Skilled in scaling on k8 using OKD.
-* Proficient in monitoring and alerting using Vector.io, Prometheus, Grafana.
+- `Convolutional`, `Recurrent`, and `Transformer`-based architectures.
+- Contrastive learning — `SimCLR`, `BYOL`, `SimSiam`.
+- Feature-importance analysis, model debugging, and profiling.
+- Topic models via Probabilistic Graphical Models and embedding-based clustering.
 
-### **Online Monitoring**
-* Expertise in hard negative mining around calibrated threshold region.
-* Experience with sampling and saving hard negatives.
-* Skilled in detecting and alerting on Model and Data Drifts.
+## Training
+
+- Distributed training with `OpenMPI + RoCE` and `Torch RPC`.
+- `PyTorch Lightning` optimizations for throughput and memory.
+
+## Calibration
+
+- **Implicit** — `Focal Loss`, Maximum-Entropy Regularization, Label Smoothing, Random Dropout.
+- **Explicit** — Isotonic Regression, Platt's scaling.
+
+## Optimization
+
+- Model compression — `Quantization`, `Pruning`, `Distillation`.
+- Graph fusing and compilation via `ONNX`, `TorchDynamo`, `TVM`.
+
+## Inference
+
+- Low-latency `C++` serving with `ONNX` and `Drogon`.
+- Serving frameworks — `Triton`, `Mosec`.
+- Scaling on `k8s` via `OKD`.
+- Monitoring & alerting with `Vector.io`, `Prometheus`, and `Grafana`.
+
+## Online Monitoring
+
+- Hard-negative mining around the calibrated threshold region.
+- Sampling and persisting hard negatives for the next training round.
+- Detecting and alerting on model and data drift.
