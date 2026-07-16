@@ -1,0 +1,10 @@
+/* Hallmark · Circuit theme — SCSS structural overrides for hugo-book
+ * These win over themes/hugo-book/assets/_variables.scss via Hugo's union FS.
+ * Colour + component design lives in _custom.scss; fonts in _fonts.scss.
+ */
+
+// A touch more breathing room for long-form ML writeups.
+$container-max-width: 84rem;
+
+// Rounder corners read friendlier than hugo-book's 4px default.
+$body-min-width: 20rem;

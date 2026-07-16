@@ -1,0 +1,30 @@
+/* Hallmark · Garden theme — font tokens + application
+ * Studied DNA (usehallmark.com/examples/garden-01): Young Serif (display) · Hanken Grotesk (body) · Geist Mono.
+ * Fonts are linked in layouts/_partials/docs/inject/head.html (preconnect + Google Fonts).
+ */
+
+:root {
+  --font-display: "Young Serif", ui-serif, Georgia, "Times New Roman", serif;
+  --font-body: "Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+body {
+  font-family: var(--font-body);
+  letter-spacing: -0.002em;
+}
+
+// Young Serif for every heading. Roman only, single organic weight — never italic, never faux-bold.
+h1, h2, h3, h4, h5, h6,
+.book-post h2 {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -0.006em;
+}
+
+// Mono for code + the terminal-prompt brand.
+code, kbd, pre, samp, tt,
+.book-brand a {
+  font-family: var(--font-mono);
+}

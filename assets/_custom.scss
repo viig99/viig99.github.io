@@ -1,0 +1,442 @@
+/* Hallmark · macrostructure: hugo-book docs shell (fixed) · tone: technical / warm-editorial · anchor hue: leaf-green 140
+ * theme: studied-DNA (source: usehallmark.com/examples/garden-01 — Hollowback Apiary) · studied: yes
+ * paper oklch(95.5% 0.022 92) · accent oklch(47% 0.13 140) leaf-green · fonts: Young Serif + Hanken Grotesk + Geist Mono
+ * pre-emit critique: P5 H5 E4 S5 R5 V4
+ * Garden — honey-and-leaf coding/tech blog over hugo-book. Light values match garden-01 verbatim;
+ * dark is a coordinated warm-forest extension (garden-01 is light-only). Every colour is a token: the
+ * theme-light / theme-dark mixins below are the single source of truth and OVERRIDE the stubs in
+ * themes/hugo-book/assets/_defaults.scss (redefined here, imported last). No submodule files are touched.
+ */
+
+/* ─────────────────────────────  TOKENS  ───────────────────────────── */
+
+// Override hugo-book's accent() mixin: it uses rgba($color, $a), which libsass
+// (the transpiler this pinned theme + GitHub Actions use) can't apply to an
+// oklch() colour. color-mix produces the same tint and passes through verbatim.
+@mixin accent($name, $color, $tint: 0.1) {
+  --color-accent-#{$name}: #{$color};
+  --color-accent-#{$name}-tint: color-mix(in oklch, #{$color} percentage($tint), transparent);
+}
+
+@mixin theme-light {
+  // Surfaces — warm oat cream (garden-01 verbatim)
+  --paper: oklch(95.5% 0.022 92);
+  --surface: oklch(92.5% 0.026 92);
+  --surface-2: oklch(88.5% 0.030 90);
+  --border: oklch(83% 0.028 115);
+  --border-strong: oklch(62% 0.045 132);
+
+  // Ink — botanical, warm near-black green
+  --ink: oklch(24% 0.052 152);
+  --ink-muted: oklch(40% 0.045 142);
+  --ink-faint: oklch(48% 0.040 138);
+
+  // Accents — leaf, terracotta, honey, plum
+  --primary: oklch(47% 0.13 140);
+  --primary-strong: oklch(42% 0.135 142);
+  --honey: oklch(74% 0.155 80);
+  --honey-deep: oklch(63% 0.165 66);
+  --terracotta: oklch(54% 0.14 46);
+  --plum: oklch(48% 0.15 348);
+  --leaf: oklch(52% 0.13 140);
+
+  // hugo-book required vars
+  --body-background: var(--paper);
+  --body-background-tint: none;
+  --body-font-color: var(--ink);
+
+  --color-link: var(--primary);
+  --color-visited-link: oklch(46% 0.11 320);
+
+  --icon-filter: none;
+
+  --gray-100: var(--surface);
+  --gray-200: var(--border);
+  --gray-500: var(--ink-faint);
+
+  // Callout accents (hint / GitHub-style alerts)
+  @include accent("default", oklch(48% 0.04 138));
+  @include accent("note", oklch(47% 0.13 140));
+  @include accent("tip", oklch(52% 0.13 140));
+  @include accent("important", oklch(48% 0.15 348));
+  @include accent("warning", oklch(63% 0.165 66));
+  @include accent("caution", oklch(54% 0.14 46));
+  @include accent("info", oklch(47% 0.13 140));
+  @include accent("success", oklch(52% 0.13 140));
+  @include accent("danger", oklch(54% 0.15 34));
+
+  // Chroma syntax tokens — warm spread anchored on the apiary hues
+  --chroma-comment: oklch(58% 0.04 138);
+  --chroma-keyword: oklch(48% 0.15 348);
+  --chroma-string: oklch(47% 0.13 140);
+  --chroma-number: oklch(58% 0.145 66);
+  --chroma-function: oklch(54% 0.14 46);
+  --chroma-type: oklch(46% 0.10 190);
+  --chroma-builtin: oklch(55% 0.14 90);
+  --chroma-operator: oklch(46% 0.04 138);
+  --chroma-deco: oklch(60% 0.15 74);
+  --chroma-ln: oklch(74% 0.028 100);
+  --chroma-hl: oklch(90% 0.035 100);
+  --chroma-ins: oklch(50% 0.13 140);
+  --chroma-del: oklch(54% 0.15 34);
+}
+
+@mixin theme-dark {
+  // Surfaces — warm forest charcoal, never flat black (coordinated dark extension)
+  --paper: oklch(22% 0.024 140);
+  --surface: oklch(26% 0.028 140);
+  --surface-2: oklch(30% 0.030 140);
+  --border: oklch(36% 0.032 140);
+  --border-strong: oklch(45% 0.038 138);
+
+  // Ink — warm cream
+  --ink: oklch(92% 0.024 96);
+  --ink-muted: oklch(74% 0.032 110);
+  --ink-faint: oklch(60% 0.032 120);
+
+  // Accents — lifted for dark
+  --primary: oklch(76% 0.15 145);
+  --primary-strong: oklch(83% 0.14 146);
+  --honey: oklch(82% 0.14 84);
+  --honey-deep: oklch(75% 0.15 70);
+  --terracotta: oklch(74% 0.14 48);
+  --plum: oklch(76% 0.15 348);
+  --leaf: oklch(80% 0.15 144);
+
+  --body-background: var(--paper);
+  --body-background-tint: none;
+  --body-font-color: var(--ink);
+
+  --color-link: var(--primary);
+  --color-visited-link: oklch(78% 0.11 320);
+
+  --icon-filter: brightness(0) invert(1);
+
+  --gray-100: var(--surface);
+  --gray-200: var(--border);
+  --gray-500: var(--ink-faint);
+
+  @include accent("default", oklch(72% 0.032 120));
+  @include accent("note", oklch(76% 0.15 145), 0.18);
+  @include accent("tip", oklch(80% 0.15 144), 0.18);
+  @include accent("important", oklch(76% 0.15 348), 0.18);
+  @include accent("warning", oklch(82% 0.14 82), 0.18);
+  @include accent("caution", oklch(74% 0.14 46), 0.18);
+  @include accent("info", oklch(76% 0.15 145), 0.18);
+  @include accent("success", oklch(80% 0.15 144), 0.18);
+  @include accent("danger", oklch(74% 0.15 34), 0.18);
+
+  --chroma-comment: oklch(60% 0.04 130);
+  --chroma-keyword: oklch(78% 0.15 348);
+  --chroma-string: oklch(82% 0.15 144);
+  --chroma-number: oklch(82% 0.13 72);
+  --chroma-function: oklch(78% 0.14 48);
+  --chroma-type: oklch(80% 0.10 190);
+  --chroma-builtin: oklch(84% 0.13 92);
+  --chroma-operator: oklch(72% 0.04 120);
+  --chroma-deco: oklch(82% 0.14 78);
+  --chroma-ln: oklch(48% 0.03 140);
+  --chroma-hl: oklch(30% 0.04 140);
+  --chroma-ins: oklch(80% 0.15 144);
+  --chroma-del: oklch(74% 0.15 34);
+}
+
+/* ─────────────────────────────  BASE  ───────────────────────────── */
+
+::selection {
+  background: color-mix(in oklch, var(--primary) 24%, transparent);
+}
+
+html {
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+// Links inside content: leaf-green with a drawn underline that thickens on hover.
+.markdown a[href] {
+  color: var(--color-link);
+  text-decoration: none;
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  transition: background-size 0.18s ease-in-out, color 0.18s ease-in-out;
+
+  &:hover {
+    color: var(--primary-strong);
+    background-size: 100% 2px;
+    text-decoration: none;
+  }
+}
+
+/* ────────────────────────────  BRAND  ──────────────────────────── */
+// Terminal-prompt wordmark: ❯ /home/vigi99 in Geist Mono.
+
+.book-brand {
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-weight: 600;
+    color: var(--ink);
+
+    &::before {
+      content: "❯";
+      color: var(--primary);
+      font-weight: 600;
+    }
+    &:hover { opacity: 1; color: var(--primary); }
+  }
+}
+
+/* ───────────────────────────  SIDEBAR MENU  ─────────────────────── */
+
+.book-menu {
+  .book-menu-content {
+    border-inline-end: 1px solid var(--border);
+  }
+
+  a {
+    border-radius: var(--border-radius);
+    padding-inline: 0.5em;
+    margin-inline: -0.5em;
+    color: var(--ink-muted);
+    transition: color 0.15s ease-in-out, background 0.15s ease-in-out;
+
+    &:hover { color: var(--ink); background: var(--surface); opacity: 1; }
+  }
+
+  // Active page: leaf-green chip with an accent spine.
+  a.active {
+    color: var(--primary-strong);
+    background: color-mix(in oklch, var(--primary) 12%, transparent);
+    font-weight: 600;
+    box-shadow: inset 2px 0 0 var(--primary);
+  }
+
+  .book-section-flat > label,
+  ul ul { border-inline-start: 1px solid var(--border); padding-inline-start: 1em; }
+}
+
+/* ───────────────────────────  TOC (right)  ──────────────────────── */
+
+.book-toc {
+  font-size: var(--font-size-smaller);
+
+  .book-toc-content {
+    border-inline-start: 1px solid var(--border);
+    padding-inline-start: 1rem;
+  }
+
+  nav > ul > li:first-child {
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  a {
+    color: var(--ink-faint);
+    &:hover { color: var(--primary); opacity: 1; }
+  }
+}
+
+/* ───────────────────────────  HEADER (mobile)  ──────────────────── */
+
+.book-header {
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: saturate(1.2);
+}
+
+/* ───────────────────────────  ARTICLE TYPE  ─────────────────────── */
+// Young Serif ships one organic weight — keep headings roman at 400, lean on size for hierarchy.
+
+.markdown {
+  h1, h2, h3, h4, h5, h6 { font-weight: 400; }
+
+  // Hairline under h2 sections the reading column without an eyebrow label.
+  h2 {
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border);
+  }
+  h2 .anchor, h3 .anchor { color: var(--primary); }
+
+  strong, b { color: var(--ink); font-weight: 600; }
+
+  hr {
+    height: 2px;
+    border: none;
+    background: linear-gradient(
+      90deg,
+      var(--primary) 0%,
+      var(--honey) 48%,
+      transparent 92%
+    );
+    opacity: 0.75;
+  }
+}
+
+/* ────────────────────  INLINE CODE + CODE BLOCKS  ───────────────── */
+
+.markdown {
+  code {
+    font-size: 0.85em;
+    background: color-mix(in oklch, var(--primary) 9%, var(--surface));
+    border: 1px solid var(--border);
+    color: color-mix(in oklch, var(--primary-strong) 70%, var(--ink));
+    border-radius: 0.3rem;
+    padding: 0.12em 0.36em;
+  }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    padding: 1rem 1.1rem;
+    line-height: 1.55;
+    box-shadow: 0 1px 2px color-mix(in oklch, var(--ink) 6%, transparent);
+
+    code {
+      background: none;
+      border: 0;
+      color: inherit;
+      font-size: 0.86em;
+      padding: 0;
+    }
+  }
+
+  .highlight {
+    border-radius: 0.6rem;
+    box-shadow: 0 1px 2px color-mix(in oklch, var(--ink) 6%, transparent);
+
+    pre { box-shadow: none; }
+    table tbody { border: 1px solid var(--border); border-radius: 0.6rem; }
+  }
+}
+
+/* ───────────────────────────  CHROMA SYNTAX  ────────────────────── */
+// Class-based highlighting (config: markup.highlight.noClasses = false).
+// Colours flow from the --chroma-* tokens so light/dark switch for free.
+
+.chroma {
+  color: var(--ink);
+  background: transparent;
+
+  .c, .ch, .cm, .c1, .cs, .cp, .cpf { color: var(--chroma-comment); font-style: italic; }
+  .k, .kc, .kd, .kn, .kp, .kr        { color: var(--chroma-keyword); }
+  .kt, .nc, .nn, .no, .ne            { color: var(--chroma-type); }
+  .s, .sa, .sb, .sc, .dl, .sd, .s2,
+  .se, .sh, .si, .sx, .sr, .s1, .ss  { color: var(--chroma-string); }
+  .m, .mb, .mf, .mh, .mi, .il, .mo   { color: var(--chroma-number); }
+  .nf, .fm                           { color: var(--chroma-function); }
+  .nb, .bp                           { color: var(--chroma-builtin); }
+  .nd, .na, .nl                      { color: var(--chroma-deco); }
+  .nt                                { color: var(--chroma-keyword); }
+  .o, .ow                            { color: var(--chroma-operator); }
+  .nv, .vc, .vg, .vi, .nx, .p, .py   { color: var(--ink); }
+  .err                               { color: var(--chroma-del); background: none; }
+
+  .gd { color: var(--chroma-del); }
+  .gi { color: var(--chroma-ins); }
+  .gh, .gu { color: var(--primary); font-weight: 600; }
+
+  .ln, .lnt { color: var(--chroma-ln); user-select: none; }
+  .hl { background: var(--chroma-hl); display: block; }
+}
+
+/* ───────────────────────────  BLOCKQUOTE  ───────────────────────── */
+
+.markdown blockquote {
+  border-inline-start: 3px solid var(--primary);
+  background: color-mix(in oklch, var(--primary) 7%, transparent);
+  padding: 0.7em 1em;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  color: var(--ink-muted);
+}
+
+/* ───────────────────────────  TABLES  ───────────────────────────── */
+
+.markdown table {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  tr th {
+    background: color-mix(in oklch, var(--primary) 12%, var(--surface));
+    color: var(--ink);
+    font-weight: 600;
+    border-color: var(--border);
+  }
+  tr td { border-color: var(--border); }
+  tr:nth-child(2n) { background: var(--surface); }
+}
+
+/* ──────────────────────  HINT / ALERT CALLOUTS  ─────────────────── */
+
+.markdown .book-hint,
+.markdown .hint {
+  border-radius: 0.5rem;
+}
+
+/* ───────────────────────────  POST LIST  ────────────────────────── */
+// Turns hugo-book's flat post list into warm cards.
+
+.book-post {
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  transition: border-color 0.18s ease-in-out, transform 0.18s ease-in-out;
+
+  &:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  h2 { margin-top: 0; border-bottom: 0; padding-bottom: 0; }
+  h2 a { color: var(--ink); &:hover { color: var(--primary); } }
+
+  .book-post-content { color: var(--ink-muted); }
+}
+
+.book-post-meta,
+.book-posts-meta {
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-smallest);
+}
+
+/* ───────────────────────────  FOOTER  ───────────────────────────── */
+
+.book-footer { color: var(--ink-faint); }
+
+.book-copyright {
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-smallest);
+}
+
+/* ───────────────────────────  FOCUS RING  ──────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ───────────────────────────  MOTION SAFETY  ────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  .markdown a[href],
+  .book-post,
+  .book-menu a {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

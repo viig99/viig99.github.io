@@ -15,6 +15,12 @@ sectionPagesMenu = "main"
 [markup.tableOfContents]
   startLevel = 1
 
+[markup.highlight]
+  # Class-based highlighting so the Garden syntax colours track light/dark.
+  noClasses = false
+  guessSyntax = true
+  tabWidth = 2
+
 [menu]
 [[menu.after]]
   name = "Contact Me"
