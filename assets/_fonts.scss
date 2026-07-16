@@ -1,17 +1,18 @@
 /* Hallmark · Garden theme — font tokens + application
- * Studied DNA (usehallmark.com/examples/garden-01): Young Serif (display) · Hanken Grotesk (body) · Geist Mono.
+ * Young Serif (display headings) · Geist Sans (body + menu) · Geist Mono (TOC + code).
+ * Body/menu share Geist's DNA with the mono TOC, so the three columns cohere.
  * Fonts are linked in layouts/_partials/docs/inject/head.html (preconnect + Google Fonts).
  */
 
 :root {
   --font-display: "Young Serif", ui-serif, Georgia, "Times New Roman", serif;
-  --font-body: "Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-body: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
 }
 
 body {
   font-family: var(--font-body);
-  letter-spacing: -0.002em;
+  letter-spacing: normal;
 }
 
 // Young Serif for every heading. Roman only, single organic weight — never italic, never faux-bold.
