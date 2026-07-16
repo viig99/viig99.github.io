@@ -6,10 +6,7 @@ title: "Machine Learning Toolkit"
 
 ## Machine Learning Toolkit
 
-The techniques and tools I reach for across the ML lifecycle — from raw data all the way to a monitored production model.
-
-> [!NOTE]
-> This is the practitioner's cut of my [Machine Learning Proficiency](/). Every area below is something I've shipped, not just read about.
+Tools and techniques I use across the ML lifecycle, from raw data to a monitored production model. A more detailed companion to my [Machine Learning Proficiency](/).
 
 ## Data Engineering
 
@@ -20,7 +17,7 @@ The techniques and tools I reach for across the ML lifecycle — from raw data a
 ## Modelling & Feature Engineering
 
 - `Convolutional`, `Recurrent`, and `Transformer`-based architectures.
-- Contrastive learning — `SimCLR`, `BYOL`, `SimSiam`.
+- Contrastive learning: `SimCLR`, `BYOL`, `SimSiam`.
 - Feature-importance analysis, model debugging, and profiling.
 - Topic models via Probabilistic Graphical Models and embedding-based clustering.
 
@@ -31,18 +28,18 @@ The techniques and tools I reach for across the ML lifecycle — from raw data a
 
 ## Calibration
 
-- **Implicit** — `Focal Loss`, Maximum-Entropy Regularization, Label Smoothing, Random Dropout.
-- **Explicit** — Isotonic Regression, Platt's scaling.
+- **Implicit**: `Focal Loss`, Maximum-Entropy Regularization, Label Smoothing, Random Dropout.
+- **Explicit**: Isotonic Regression, Platt's scaling.
 
 ## Optimization
 
-- Model compression — `Quantization`, `Pruning`, `Distillation`.
+- Model compression: `Quantization`, `Pruning`, `Distillation`.
 - Graph fusing and compilation via `ONNX`, `TorchDynamo`, `TVM`.
 
 ## Inference
 
 - Low-latency `C++` serving with `ONNX` and `Drogon`.
-- Serving frameworks — `Triton`, `Mosec`.
+- Serving frameworks: `Triton`, `Mosec`.
 - Scaling on `k8s` via `OKD`.
 - Monitoring & alerting with `Vector.io`, `Prometheus`, and `Grafana`.
 
