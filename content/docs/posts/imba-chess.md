@@ -1,19 +1,20 @@
 +++
 title = "Building a Chess Bot with HSTU: From Lichess Pretraining to Value Search"
-description = "A learning journal on training a compact chess policy model using HSTU-style next-token prediction on Lichess games, adding a value head for WDL prediction, and using policy-pruned minimax search to improve playing strength."
+description = "A running build log on training a compact chess policy from Lichess games with an HSTU sequence model, adding a WDL value head, and turning it into ~2250-strength play with a sequential-halving value search. Plus the current bet: distilling that search back into the policy."
 tags = [
   "chess",
   "HSTU",
-  "reinforcement learning",
   "next-token prediction",
   "value head",
-  "minimax search",
+  "sequential halving",
+  "MCTS",
+  "policy distillation",
+  "on-policy distillation",
   "Lichess",
   "Stockfish",
   "sequential modeling",
-  "large-scale ML"
 ]
-date = "2026-02-27"
+date = "2026-07-16"
 categories = [
   "Machine Learning",
   "Chess",
@@ -25,74 +26,42 @@ draft = false
 
 ## Build Log Snapshot
 
-This post is my running build log for `imba-chess`.
+This is my running build log for [`imba-chess`](https://github.com/viig99/imba-chess). I update it as things change, so it reads out of order in places. That is on purpose.
 
-Right now, the checked-in model is about **12.6M parameters**.  
-My original target in the notes was 20–30M, but I am still iterating toward that.
+Where it stands today:
 
-The project is intentionally built to run on constrained hardware.  
-Most of this training/dev loop has been on my **8GB RTX 3070 laptop**.
+- I trained a small HSTU sequence model to imitate high-Elo Lichess games (next-move prediction). It reaches `hr@10` around `0.92` and `top-1` around `0.43` on held-out games.
+- On its own, that policy is weak at actual chess. Greedy play scores `0.21` against Stockfish limited to 1400 Elo. Good imitation, bad chess.
+- Adding a WDL value head and a value-guided search at move-selection time changes the story. The current best system scores `0.595` against Stockfish at 2200 Elo, which puts the whole thing at roughly **2250 Elo**. That is about an 800 to 1000 Elo jump over the raw policy, with no reinforcement learning and no self-play yet.
+- The search that got me there is `value_search_halving`: sequential halving to decide which root move to spend compute on, plus a prior-ordered beam for the tree underneath it.
+- The current bet is distilling that search back into the policy head, so the policy itself gets stronger without paying for search at inference. This is grounded in the Gumbel MuZero policy-improvement result. It is designed and being built, not yet a proven win.
 
-What I have done so far:
+Two model sizes show up below: `v3` (512-dim, 6 layers, about 10M params) and `v4` (768-dim, 8 layers, about 27M params). The bigger `v4` trunk finally hit my original 20-30M target and it mattered. Most of the dev loop runs on modest hardware: an 8GB laptop GPU (RTX 3070 class), some runs on a 4090, and a rented 5090 for a while to speed up rollout generation.
 
-- Adapted HSTU-style causal sequence modeling from recommender systems to chess.
-- Trained next-move prediction (policy head) on high-Elo Lichess game data.
-- Evaluated offline metrics: top-1, hr@10, MRR.
-- Tested against Stockfish. Results: humbling.
-- Added a value head (WDL), wired it into move selection.
-- Implemented depth-2 policy-pruned minimax search on top.
-- Defined a Stockfish ladder evaluation pipeline for reproducible strength measurement.
-
-My core framing is: **a chess game is a structured event sequence**.
+My core framing has not changed: **a chess game is a structured event sequence**, and the recsys sequence toolkit should transfer to it.
 
 ---
 
 ## What Triggered This Project
 
-Before this, I finished an STU + FlexAttention rewrite and tested it on:
+Before this, I finished an STU + FlexAttention rewrite and tested it on two large recommender datasets, Zvuk-200M and Yambda-500M. That work beat strong SASRec baselines and scaled cleanly. After a point the recsys gains felt marginal, so I wanted a harder sequential-reasoning problem to point the same tools at.
 
-- Zvuk-200M
-- Yambda-500M
+Chess fit:
 
-That work beat strong SASRec baselines and showed clean scaling.  
-After a point, additional recsys gains felt marginal, so I wanted a harder sequential reasoning problem.
+- two-player sequential decisions,
+- long-horizon credit assignment,
+- explicit win/draw/loss outcomes,
+- cheap large-scale supervised data from Lichess.
 
-Chess was the natural next step:
-
-- two-player sequential decisions
-- long horizon credit assignment
-- explicit win/draw/loss outcomes
-- cheap large-scale supervised data from Lichess
-
-So this became my side learning project: can the same sequence toolkit transfer from recommendation to strategy?
+So this became a side project with one question behind it: can the same sequence toolkit transfer from recommendation to strategy?
 
 ---
 
 ## Why Chess and Why HSTU
 
-Most strong chess systems lean heavily on self-play + search. That works, but it is expensive.  
-I started with a cheaper path: imitate strong human games first, then add value/search.
+Most strong chess engines lean on self-play plus heavy search. That works, but it is expensive to build and run. I started from the cheaper end: imitate strong human games first, then bolt value and search on top.
 
-HSTU was built for jagged structured sequences in recsys.  
-Chess has the same shape: variable-length event sequences, structured state, known next-action target.
-
-Simple bet: **if it can predict next-item well, it can predict next-move well**.
-
----
-
-## Original Project Brief (Early Notes)
-
-My initial brief was:
-
-- Use the full Lichess stream (~2.3TB scale over many years).
-- Encode board state + move history + metadata.
-- Add player embeddings (QR), Elo buckets, time-control features, and clock signals.
-- Pretrain on next legal UCI move prediction.
-- Move into RL post-training (PPO/GRPO), self-play via pufferlib, and/or engine matches.
-- Evaluate against Stockfish/Leela by win-rate and Elo trends.
-- Keep the whole system practical on a single 4090 in roughly 20–30M parameters.
-
-That direction still holds, but the implementation has changed based on actual results.
+HSTU was built for jagged, structured sequences in recsys. Chess has the same shape: variable-length event sequences, structured per-step state, and a known next-action target. The bet was simple. If it can predict the next item well, it can predict the next move well.
 
 ---
 
@@ -100,14 +69,13 @@ That direction still holds, but the implementation has changed based on actual r
 
 ### Source
 
-I use the [Lichess open game database](https://database.lichess.org/) via `Lichess/standard-chess-games` on Hugging Face.
-The hive `year/month` partitioning makes temporal splits straightforward.
+I use the [Lichess open game database](https://database.lichess.org/) through `Lichess/standard-chess-games` on Hugging Face. The `year/month` partitioning makes clean temporal splits easy.
 
-Main filter: average Elo `(WhiteElo + BlackElo) / 2 >= 2000`.
+Main filter: average Elo `(WhiteElo + BlackElo) / 2 >= 2000`. I also drop very fast time controls, since bullet games are full of tactical noise that I do not want the policy imitating.
 
 ### Temporal Splits
 
-I use chronological splits (not random) to avoid future leakage.
+Chronological splits, not random, to avoid leaking the future into training.
 
 | Split | Window |
 |---|---|
@@ -115,69 +83,35 @@ I use chronological splits (not random) to avoid future leakage.
 | val | 2025-07 (single month) |
 | test | 2025-08 through 2025-09 |
 
-No model is selected using the test split.
-
-### Historical Run Profile (From Earlier Training Notes)
-
-One earlier run (from notes) used:
-
-- Train window: `2018-01 -> 2025-06`
-- Train filter: average Elo >= 2000
-- Test filter: average Elo >= 2400 on `2025-08 -> 2025-09`
-
-From those notes:
-
-- estimated high-Elo train pool around 422M games
-- observed ingest/training throughput around ~1.5M games/hour in that run
-- average game length observed around 70-80 moves
-
-These are run-log observations, not the current default config.
+No model is ever selected on the test split. An earlier run used a longer train window back to 2018 and a stricter 2400-Elo test filter. From those notes: roughly 422M games in the high-Elo pool, ingest around 1.5M games/hour, average game length around 70 to 80 moves.
 
 ### PGN Parsing and Board State
 
-Each game is replayed with `python-chess`. At each ply, the board is converted to a structured token representation — not a FEN string, not a text sequence.
-
-**Board state per ply:**
+Each game is replayed with `python-chess`. At every ply the board becomes a structured token, not a FEN string and not text.
 
 | Field | Values | Notes |
 |---|---|---|
-| `piece_ids` | `[64]`, 0–12 | 0=empty, 1–6=white, 7–12=black |
+| `piece_ids` | `[64]`, 0-12 | 0=empty, 1-6=white, 7-12=black |
 | `turn_id` | 0/1 | side to move |
-| `castle_id` | 0–15 | KQkq bitmask |
-| `ep_file_id` | 0–8 | en-passant file + 1, 0=none |
-| `halfmove_bucket_id` | ≥0 | bucketed clock |
-| `fullmove_bucket_id` | ≥0 | bucketed move number |
+| `castle_id` | 0-15 | KQkq bitmask |
+| `ep_file_id` | 0-8 | en-passant file + 1, 0=none |
+| `halfmove_bucket_id` | >=0 | bucketed clock |
+| `fullmove_bucket_id` | >=0 | bucketed move number |
 
-Targets are UCI move IDs from a static vocabulary of all legal UCI moves (from→to + promotions).
+Targets are UCI move ids from a static vocabulary of every geometrically reachable from-to pair plus promotions (1,970 tokens including specials). That vocabulary provably covers every legal standard-chess move, so the policy never has to invent a token for a move it has not seen.
 
-### Incremental Board Updates (Benchmarked, Not Yet Main Path)
-
-I benchmarked the `board.piece_map()` rebuild path and explored incremental `bytearray(64)` updates.
-
-In theory, a chess move touches at most 4 squares (castling: king + rook):
-
-```text
-Normal move:    2 squares
-Capture:        2 squares
-En passant:     3 squares
-Castling:       4 squares
-Promotion:      2 squares
-```
-
-The estimated improvement in notes was ~14–16 µs/ply down to ~2–5 µs/ply.  
-But to be clear: the **current main encoder still rebuilds from `board.piece_map()`**. Incremental updates are planned, not merged.
+One encoding detail that bit me: the board embedding is a joint `(piece, square)` table, mean-pooled over the 64 squares. An additive `piece + square` scheme collapses to a bag of material under pooling (it throws away where the pieces are), so the joint table is load-bearing, not a nicety.
 
 ### Jagged Batching
 
-Multiple games are packed into a single flat token buffer, with `seq_offsets` marking boundaries. This is the same trick from [FlexAttention HSTU at 500M Events](./hstu-for-yambda.md): no cross-game attention, no padding waste.
+Multiple games are packed into one flat token buffer with `seq_offsets` marking boundaries, the same trick from [FlexAttention HSTU at 500M Events](./hstu-for-yambda.md): no cross-game attention, no padding waste.
 
 ```text
 [BOS | ply1 ply2 ... plyN | BOS | ply1 ... plyM | ...]
        game 1                    game 2
 ```
 
-Batch shape: `[total_tokens]` for most fields, `[total_tokens, 64]` for `piece_ids`.  
-No per-token padding mask is materialized; a block mask is derived from `seq_offsets` at runtime.
+No per-token padding mask is materialized. A block mask is derived from `seq_offsets` at runtime.
 
 ---
 
@@ -188,41 +122,20 @@ No per-token padding mask is materialized; a block mask is derived from `seq_off
 {{< mermaid >}}
 flowchart LR
     A[piece_ids 64 tokens] --> B[E_piece + E_square]
-    B --> C[Mean pool → board_emb]
+    B --> C[Mean pool to board_emb]
     D[prev_move_id] --> E[E_move]
     F[turn/castle/ep/clk] --> G[E_meta]
     C --> H[Additive event composition]
     E --> H
     G --> H
-    H --> I[HSTU Backbone causal layers]
-    I --> J[Policy Head → move logits]
-    I --> K[Value Head → loss/draw/win]
+    H --> I[HSTU backbone, causal layers]
+    I --> J[Policy head to move logits]
+    I --> K[Value head to loss/draw/win]
 {{< /mermaid >}}
 
-### Embedding Layers
+Each ply becomes a single event vector by embedding the structured fields and summing them: mean-pooled board embedding, previous-move embedding, and metadata (turn, castling, en passant, clock buckets). The backbone is causal with a relative position bias over plies.
 
-Each ply is converted to a single event vector by embedding structured fields and **summing** them (current implementation):
-
-```text
-event_t = board_emb
-        + seq_token_emb
-        + turn_emb
-        + castle_emb
-        + ep_emb
-        + halfmove_emb
-        + fullmove_emb
-        + prev_move_emb
-```
-
-Where:
-- `board_emb` = mean over (E_piece(piece_ids) + E_square(index)) for all 64 squares
-- `move_emb_{t-1}` = embedding of the previous move (or START token at ply 1)
-- `meta_emb` = embeddings of turn, castling rights, en-passant file, clock buckets
-
-### HSTU Backbone
-
-The backbone is causal with relative position bias over plies.
-Current footprint is ~12.6M params (with value head), and it trains fine on a single RTX 4090.
+Two sizes are in play: `v3` at about 10M params (512-dim, 6 layers) and `v4` at about 27M (768-dim, 8 layers, with the value loss weighted higher). The `v4` trunk is where the value head got good enough for search to pay off at the higher rungs.
 
 ---
 
@@ -230,296 +143,219 @@ Current footprint is ~12.6M params (with value head), and it trains fine on a si
 
 ### Objective
 
-Cross-entropy on next UCI move over the full static move vocabulary:
-
-```text
-loss = CE(logits, target_move_id)
-```
-
-BOS positions are excluded via `ignore_index = -100`.
+Cross-entropy on the next UCI move over the full static vocabulary. BOS positions are excluded with `ignore_index = -100`. This is pure imitation: no reward, no self-play.
 
 ### Elo-Weighted Loss
 
-Not all supervision is equally useful, so I weight by played-by Elo:
+Not all supervision is equally good, so I weight each move by the Elo of the player who made it. Stronger players' moves pull the gradient harder.
 
 ```text
 norm_i = clamp((elo_i - min_elo) / (max_elo - min_elo), 0, 1)
-w_i    = 1 + strength × (norm_i ^ alpha)
-loss   = Σ(w_i × ce_i) / Σ(w_i)
+w_i    = 1 + strength * (norm_i ^ alpha)
+loss   = sum_i(w_i * ce_i) / sum_i(w_i)
 ```
 
-Weight normalization keeps gradients stable.  
-I also use label smoothing because strong positions often have multiple reasonable moves.
+I normalize the weights so gradients stay stable, and use label smoothing because strong positions often have several reasonable moves and I do not want to punish the model for picking a different good one.
 
-### Training Infrastructure
+### Where Imitation Topped Out
 
-- Optimizer: StableAdamW with OneCycleLR scheduler
-- Precision: bfloat16 mixed precision
-- Checkpointing: best by `hr@10` on full val, plus periodic last checkpoints
-- Logging: TensorBoard + periodic fast val/test checks
+The policy trains well by its own metrics. Held-out `hr@10` crossed `0.9`, `top-1` sat around `0.45`. Then I played it against Stockfish and it lost badly, even to Stockfish limited to 1400. That gap was the most useful thing that happened early on.
 
----
+Good imitation metrics are necessary but not sufficient for winning play. The objective learns "what humans played", not "what maximizes winning chances". Greedy decoding overcommits to narrow policy modes. Sampling recovers the occasional win but not stable strength. The win/loss signal is only weakly coupled to move-level cross-entropy unless something at inference explicitly optimizes for it.
 
-## Evaluation Metrics
-
-### Offline Metrics (Phase 1)
-
-Evaluated on held-out val/test splits every N steps:
-
-| Metric | What it measures |
-|---|---|
-| `loss_ce` | Cross-entropy on target move |
-| `ppl` | Perplexity (exp of loss_ce) |
-| `top1_acc` | Argmax move matches human move |
-| `top3_acc` / `top5_acc` | Move in top-3/5 |
-| `hr@10` | Hit rate at 10 (top-10 accuracy) |
-| `mrr` | Mean reciprocal rank of ground-truth move |
-
-Model selection uses `hr@10` from full val as the primary signal.
-
-### Slice Metrics (Planned Expansion)
-
-Global averages hide regressions.  
-Phase/Elo slice reporting is in the eval spec, but current evaluator outputs are mostly global (`loss_ce`, `ppl`, `top-k`, `mrr`).
-
-### Engine Evaluation (Phase 2)
-
-After offline metrics stabilize, the model plays against Stockfish:
-
-- Alternating colors, fixed time controls
-- Current default ladder config: `1320, 1600, 1800, 2000` (plus optional full-strength segment)
-- Reports currently include wins/draws/losses, score rate, color split, legal-move coverage, and run config
-- Elo estimate + confidence intervals are part of the evaluation plan, but not yet emitted by the script
-
-### Current Snapshot from Stored Artifacts
-
-From current `artifacts/checkpoints/tb` and `artifacts/eval`:
-
-| Area | Result |
-|---|---|
-| Offline full-val `hr@10` | improved to **0.9208** |
-| Offline full-val `top1_acc` | **0.4341** |
-| Offline full-val `mrr` | **0.6029** |
-| Stockfish ladder @1320 (sample policy) | `2/22/76`, score `0.13` |
-| Stockfish ladder @1600 (sample policy) | `0/5/95`, score `0.025` |
-| Stockfish ladder @1800 (sample policy) | `0/10/90`, score `0.05` |
-| Stockfish ladder @2000 (sample policy) | `1/7/92`, score `0.045` |
-| Stockfish full strength (sample policy) | `0/0/100`, score `0.00` |
-
-### Early Milestone Notes (Before Full Value/Search Integration)
-
-From an earlier checkpointing phase:
-
-- `hr@10 = 0.830764` was reached while training was still early.
-- Later policy-only runs crossed `hr@10 > 0.9` and `top1 ~ 0.45`.
-- Despite that, initial engine strength was poor: policy-only behavior could still underperform badly versus low-Elo Stockfish settings.
-
-This was the key project inflection point for me: good imitation metrics were necessary, but not enough for winning play.
+Pretraining gave me a good prior. It did not give me reliable chess.
 
 ---
 
-## Phase 2: Adding a Value Head
+## Phase 2: The Value Head
 
-### Why a Value Head
+### Why
 
-A policy head mainly learns "what move humans pick".  
-It does not directly optimize for outcome quality.  
-The value head adds explicit WDL outcome prediction from the position.
-
-Without value at inference time, the model cannot cleanly separate:
-- "This move is popular in human games" (policy says yes)
-- "This move leads to a winning position" (requires value)
+The policy answers "what move do humans pick here". It does not answer "does this move lead to a winning position". Those are different questions, and the second one is what you need to not hang a piece. So the trunk gets a second head.
 
 ### WDL Classification
 
-The value head is a 3-class classifier from the side-to-move perspective:
+A 3-class head predicts win/draw/loss from the side-to-move perspective. I use 3 classes on purpose rather than a scalar. A scalar `0.0` cannot tell "certain draw" apart from "unclear, 50/50 win or lose", and those are genuinely different situations. A scalar is recovered at inference when I need one:
 
 ```text
-value_logits = Linear(d, 3)  # [loss, draw, win]
+V(s) = p(win) - p(loss)  in [-1, 1]
 ```
 
-Labels are derived from the per-game result (`game_result_white ∈ {+1, 0, -1}`) and per-token `turn_id` (to flip perspective for black).
+### The Labels Are Noisy, and What Helps
 
-A scalar value is extracted as:
+The label for every position in a game is that game's final result. That is a high-variance Monte-Carlo label. A winning position that the player later threw away gets labeled "loss". Two levers help:
 
-```text
-V(s) = p(win) - p(loss) ∈ [-1, 1]
-```
-
-### Progress Weighting
-
-Value labels derived from final game results are noisy — early positions have a weak causal link to who ultimately wins. We downweight early plies and emphasize later ones:
-
-```text
-progress_weight = (ply_index / total_plies) ^ alpha
-```
-
-Current config uses `value_weight_alpha = 0.9` (mild late-game emphasis). I still treat this as a tuning knob.
+- **Progress weighting.** Each position's value loss is weighted by `progress ^ value_weight_alpha`, where progress is how far into the game the position is. Final outcomes are noisy labels for early positions and clean labels for late ones, so early plies contribute little gradient. I moved `alpha` from `0.9` (near a full linear discount) down to `0.1` after a decile-bucketed held-out study showed `0.1` won in 7 of 10 game-progress buckets, mostly in the early and middle game.
+- **Elo-weighting the value loss too.** Stronger players convert winning positions more reliably, so their outcomes are lower-noise value labels. Weighting the value loss by player Elo (the same weighting the policy loss uses) turned out to be the single biggest lever I found at the top rung. More on that below.
 
 ### Combined Loss
 
 ```text
-total_loss = policy_loss + λ × value_loss
+total_loss = policy_loss + value_loss_weight * value_loss
 ```
 
-Early notes suggested starting near `λ = 0.15` for safety.  
-Current checked-in config uses `value_loss_weight = 0.5`, and I am still tuning this.
+The value head gets its own small MLP capacity (`Linear -> SiLU -> Linear`) so the policy objective does not crowd it out of the shared trunk. `value_loss_weight` is a knob I am still tuning; `v4` runs it higher than `v3` did.
+
+---
+
+## Phase 3: Using the Value Head at Inference
+
+Training a value head barely moves playing strength on its own. The gain comes from using the value during **move selection**. I built these up in order, each one measured against the last on the same checkpoint and the same Stockfish settings.
+
+### Greedy (baseline)
+
+Play the highest-logit legal move. One forward pass, nothing checks consequences, so a natural-looking move that hangs a piece to a two-move tactic gets played anyway. This is the baseline everything else has to beat.
+
+### Value Rerank (1-ply lookahead)
+
+Take the top-K policy candidates, evaluate the position after each with the value head, and play the best:
+
+```text
+score(move) = V(position after move) + lambda * log_prob(move)
+```
+
+Value does the choosing; the policy log-prob is a near-tie breaker. One thing this taught me is durable: setting `lambda = 0` measurably collapses. With no policy term the search over-exploits value-head noise. It finds the move the value head is most wrong about in the optimistic direction. This is Goodhart, plain and simple, and the prior term is a real regularizer, not decoration.
+
+### Value Search d2 (adversarial lookahead)
+
+Value rerank plus one level of "if I play this, what is the worst reply". The important detail is which opponent replies get evaluated: the policy top-K **plus every capture, check, and promotion**. The refutation of a bad move is often a move the human-imitation policy ranks low, so pruning by probability alone would hide exactly the move that disproves the candidate. Each candidate is scored by its worst reply (`grade = min over responses of V`). This cleared my pre-registered bar for building a real search: `+0.13` over greedy on the same checkpoint.
+
+### Value Search Halving (the one that worked)
+
+d2 spends its budget uniformly. The obviously losing move gets as much attention as the two moves the decision actually hinges on. That is wasteful. Halving fixes the **allocation** by treating "which root move do I play" as a best-arm identification problem, using sequential halving (the root allocation from Gumbel MuZero).
+
+Per turn:
+
+1. **Arms.** The top `search_top_m` moves by prior, plus any capture, check, or promotion outside that set.
+2. **Rounds.** The value budget is split across rounds. After each round the worst-scoring half of the arms is eliminated, and their unspent budget flows to the survivors. Obvious losers die after a handful of evaluations. The final two candidates get deep trees.
+3. **Tree growth by plausibility.** Each surviving arm owns a priority queue of positions to expand, ordered by the cumulative policy log-prob of the line (both sides). Forced replies (captures, checks, promotions) inherit their parent's priority, so a refutation competes at the plausibility of the line it refutes instead of getting pruned. Forced lines go deep, quiet wide positions stay shallow.
+4. **Scoring.** Negamax backup over the realized tree (terminals scored exactly, frontier leaves on their value estimate), plus the `lambda * log_prob` root-move term.
+
+The rule that keeps this honest: **value never chooses what to expand.** The queue is ordered by the prior alone. Value enters only at backup and at arm comparison. If you let value pick what to expand, you keep exactly the lines where the opponent conveniently blunders, which is the `lambda = 0` failure again in tree form.
 
 {{< mermaid >}}
 flowchart TD
-    A[HSTU hidden state] --> B[Policy Head]
-    A --> C[Value Head]
-    B --> D[CE loss on next move]
-    C --> E[CE loss on WDL outcome]
-    D --> F[total_loss = policy_loss + λ × value_loss]
-    E --> F
+    A[Root position] --> B[Arms: top-m by prior + forcing moves]
+    B --> C[Round: split budget across surviving arms]
+    C --> D[Grow each arm's tree by prior-ordered beam]
+    D --> E[Negamax backup, score each arm]
+    E --> F[Eliminate worst half, budget flows to survivors]
+    F --> G{More than one arm?}
+    G -- yes --> C
+    G -- no --> H[Play surviving root move]
 {{< /mermaid >}}
 
-### Training Schedule
+### Prefix-Cache Decode (what made bigger budgets affordable)
 
-1. **Warm start** (optional): freeze backbone for 1k–3k steps, train only heads.
-2. **Joint training**: unfreeze all, keep `value_loss_weight` low initially.
-3. **Monitor**: if policy metrics drop, reduce value weight.
+Search is only useful if you can afford enough of it. The once-per-turn root forward pass doubles as a prefill, and its per-layer K/V become a shared cache. Each searched position is then a single new token attending to that cache, which is O(1) new work per evaluation instead of re-encoding the whole game history. That is roughly 3.7x faster and is what made the 1024 and 2048 budgets practical.
 
 ---
 
-## Phase 3: Using Value at Inference
+## The Strength Journey: From Losing to SF1400 to Around 2250
 
-Adding a value head to training only modestly improves playing strength. The real gain comes from using the value during **move selection**.
+Here is the arc that matters, each row measured over 100 games, colors alternating, Stockfish at 0.05s per move with its Elo cap set per rung. Score is `(wins + 0.5 * draws) / games`, with about `±0.05` standard error at 100 games. The eval script does not emit calibrated Elo yet, so the Elo numbers below are derived from score rate against a known opponent, not measured directly.
 
-### Mode 1: Greedy (Baseline)
+| Opponent | Move selection | Model | W / D / L | Score |
+|---|---|---|---|---|
+| SF1400 | greedy | v3 | 7 / 28 / 65 | 0.21 |
+| SF1400 | value_search_d2 | v3 | 22 / 16 / 47 | 0.34 |
+| SF1400 | halving 256/d4 | v3 | 88 / 7 / 5 | **0.915** |
+| SF1800 | halving 1024/d6 | v4 | 56 / 19 / 25 | 0.655 |
+| SF2000 | halving 1024/d6 | v4 | 41 / 22 / 37 | 0.520 |
+| SF2200 | halving 2048/d8 | v4 (Elo-weighted value loss) | 44 / 31 / 25 | **0.595** |
 
-Pick the highest-logit legal move. Fast, deterministic, no value used.
+What each step actually bought, in order:
 
-### Mode 2: Sampled Decoding
+1. **Greedy** set the imitation floor: `0.21` vs SF1400, which is roughly 1170-Elo play. The policy loses to a 1400.
+2. **Value rerank** established two facts I kept relying on: value-dominant scoring beats policy-dominant, and `lambda = 0` collapses.
+3. **Value search d2** added adversarial lookahead with forcing-move refutations, `+0.13` over greedy.
+4. **Halving** replaced uniform allocation with sequential halving and a prior-ordered tree. On SF1400 that took `0.34` to `0.915`, roughly `+330` Elo, and saturated the rung.
+5. **Prefix-cache decode** made the bigger budgets affordable, which opened up the 1800 and 2000 rungs.
+6. **The v4 trunk** (768-dim, 8 layers, higher value weight) lifted the value oracle itself. At a matched search budget it took SF1800 from `0.465` to `0.600`, and it revived a budget curve that had flattened under `v3`. This is the part I want to flag for other applied folks: search compute only converts into strength as well as your value estimate lets it. A better oracle is what unlocked more search paying off.
+7. **Elo-weighting the value loss** was the biggest single lever at SF2200. Resuming training with it took the pure-head system from `0.510` to `0.595` at 2048/d8. A `0.595` score against a 2200 opponent is worth about `+65` Elo, which is where the "around 2250" claim comes from.
 
-Sample from top-k / top-p legal moves with temperature. Adds variety, occasionally finds surprising moves, but can also pick blunders.
+One dead end worth recording. I tried blending in a separate Stockfish-distilled value net as a second opinion. It helped at the 1800 and 2000 rungs, where the trunk's own value head was still weak. But as the head improved (v4, then Elo-weighted value loss) the external net stopped earning its place and eventually became a small drag. I removed it. When I audited the code I also found it had quietly never been wired into the shipped config for a stretch, which is its own lesson about checking that your feature is actually on before trusting its ablation.
 
-### Mode 3: Value Rerank (1-Ply Lookahead)
-
-Take top-K policy candidates, evaluate each resulting position with the value head, pick the best:
-
-```text
-score(move) = log π(move | s) - λ × V(next_state)
-```
-
-The minus sign: after we move, it is the opponent's turn at `next_state`, so high opponent value is bad for us.
-
-{{< mermaid >}}
-flowchart LR
-    A[Current state s] --> B[Policy: top-K legal moves]
-    B --> C[Apply each move → s']
-    C --> D[Value head on each s']
-    D --> E[Score = log π - λ V_opp]
-    E --> F[Pick best scoring move]
-{{< /mermaid >}}
-
-Default settings: `K = 8`, `λ = 0.35`.
-
-### Mode 4: Depth-2 Policy-Pruned Minimax
-
-One step deeper: after my move, simulate opponent reply, then choose move with best worst-case reply value.
-
-```text
-Q(a) = min_{b ∈ top-K} V(apply(apply(s, a), b))
-a*   = argmax_a Q(a)
-```
-
-The branching factor is controlled by keeping only top-K policy candidates at each ply: K1 candidate moves for us, K2 opponent responses each.
-
-{{< mermaid >}}
-flowchart TD
-    A[Root state s] --> B[Our top-K1 moves]
-    B --> C[For each candidate a → s']
-    C --> D[Opponent top-K2 moves]
-    D --> E[For each response b → s'']
-    E --> F[Value V at s'']
-    F --> G[Opponent picks b that minimizes V for us]
-    G --> H[We pick a with best worst-case V]
-{{< /mermaid >}}
-
-Why this helped me early: many losses were immediate tactical misses.  
-Depth-2 explicitly checks "what is their best next reply?"
-
-**Batch optimization**: instead of calling the transformer node-by-node, batch all K1 × K2 grandchild states into a single forward pass. This can be 10–100× faster on GPU.
+All of this is one-or-two-datapoint territory at 100 games each. Treat it as directions that held up, not laws.
 
 ---
 
-## What Went Wrong (And Why)
+## The Current Bet: Distilling Search Back Into the Policy
 
-This was the most useful learning phase so far.
+The system above pays for search at inference, every move, forever. The obvious question is whether I can push the search's improvement back into the policy itself, so the raw policy gets stronger and I need less search (or none) at play time. This is expert iteration, and it is where I am spending time now.
 
-A policy model can look strong offline (`hr@10`, `top1`) and still collapse in actual play:
+### First attempt distilled search into the value head, and it did not work
 
-- imitation objective learns "what humans played", not "what maximizes winning chances"
-- greedy decoding can overcommit to narrow policy modes
-- sampling can recover occasional wins, but not stable strength
-- win/loss signal is weakly coupled to policy CE unless value/search is explicitly used
+The first idea was to take the search's backed-up value at each position and blend it into the value-head target against the real game outcome. I ran it at production scale and it did not beat the pure-outcome baseline at any blend weight. Held-out value loss got consistently worse the more I leaned on the searched target.
 
-In short: pretraining gave me a good prior, but not reliable tactical behavior by itself.
+Reading around fixed why. Every example I could find where search-to-**value** distillation actually works (Gumbel MuZero, EfficientZero V2, the older Meep chess program) runs inside a **continual self-play loop**, and where the motivation is stated it is about correcting staleness in a replay buffer. My setup had neither property. I generated rollouts once, from one frozen checkpoint, against a static set of human games, and only labeled the root of each sampled position. The mechanism that makes this pay off elsewhere was mostly absent from how I ran it.
+
+### The better-grounded idea: distill search into the policy
+
+Gumbel MuZero (Danihelka et al., ICLR 2022) has a result that the value approach does not: distilling the search's improved root distribution into the **policy** gives a single-round improvement guarantee that holds even from a frozen checkpoint. That is exactly my situation. So Phase 1b distills `value_search_halving`'s root-arm outcome into the policy head, reusing the same rollout data.
+
+The mechanism, in applied terms:
+
+- For each searched position, build an improved target over moves. Searched arms get scored by their backed value `q̂`. Every other move keeps whatever probability mass the current policy already gives it. The paper calls this `completedQ`.
+- Turn that into a target distribution, `π' = softmax(logits + alpha * completedQ)`, and pull the policy toward it with a KL term, mixed with the usual human-move cross-entropy.
+- `alpha` is a single fixed constant, swept on a small grid. I deliberately did not make it visit-adaptive. I tried that (a `c_visit` scheme borrowed from the same paper) and it blew up: a value tuned at a small search budget meant something completely different at the production budget and collapsed search quality to `0.10`. Same Goodhart failure as `lambda = 0`, reached from a different direction. The simplest version the guarantee actually supports is the one to build.
+
+The root sampling matters here too. The rollouts sample root moves with a Gumbel-top-k trick, which is an unbiased sample from the policy rather than a deterministic top-k. Deterministic top-k can miss the only good move and score worse than the raw prior, which the paper shows with a clean counterexample. So the rollouts are genuinely on-policy samples, which is what the improvement guarantee needs.
+
+### Why I call it on-policy self-distillation
+
+There is no external teacher. The "teacher" is the same model's own search built from its policy and value heads. The rollouts come from the model's own on-policy sampling. The improved target gets distilled back into the same model's policy head. That is self-distillation, and because the rollouts are generated by the policy being trained, it is on-policy distillation.
+
+That framing comes with a known hazard, which the recent "Lightning OPD" work (Wu, Han and Cai, NVIDIA) makes precise: on-policy distillation needs **teacher consistency**. The model that generated the training targets and the model being trained should be the same, or a gradient bias creeps in that grows as the student drifts away from the checkpoint that produced the rollouts. Their exact bound is for a different setup (trajectory-level, advantage-weighted distillation over the model's own autoregressive rollouts), and mine is a per-position soft-label KL over human game positions, so the precise theorem does not transfer. But the practical concern does, by analogy. A rollout's backed value reflects whichever checkpoint's search produced it, and training against it while drifting away from that checkpoint is the same staleness axis that sank the value-distillation attempt. So Phase 1b scores the target against the **live** current model rather than the frozen rollout, to track that drift instead of pretending it is not there, with a checkpoint-consistency guard to keep me honest.
+
+### Status: designed, being built, blocked on throughput
+
+This is not a result yet. The loss is wired in and tested. The thing in the way is boring and real: generating enough search rollouts to cover the KL target over 10,000 to 20,000 training steps is slow. I tried scaling to a rented 5090 and it did not help the single-shard rate. Profiling pointed at a slow legal-move / `gives_check` path as the actual bottleneck, and a faster version is designed but not built. So the honest status is: the idea is grounded, the plumbing exists, and I am currently fighting the data-generation cost before I can say whether it works.
 
 ---
 
-## Ablation Matrix
+## What I Got Wrong (a running list)
 
-To measure what actually moves the needle on Stockfish win rate, this is the comparison matrix to run under identical settings:
-
-| Configuration | Description |
-|---|---|
-| Policy-only + greedy | Baseline |
-| Policy+value training, greedy decode | Does value training help representations? |
-| Policy+value training, value-rerank | Does 1-ply value improve play? |
-| Policy+value training, depth-2 search | Does minimax help further? |
-
-All comparisons use the same Stockfish time controls and opening protocols.
+- **Trusting offline metrics.** `hr@10 > 0.9` and a policy that loses to SF1400. Good imitation is not good chess.
+- **`lambda = 0` in value scoring.** Drop the policy prior and the search happily optimizes value-head noise. The prior is load-bearing.
+- **A hyperparameter screen at the wrong budget.** The `c_visit` idea looked good at budget 256 and collapsed at 2048, because its effect scales with the budget. A cheap screen is not a substitute for testing at the deployment budget, even when the scaling is mathematically obvious in hindsight.
+- **Distilling search into the value head, offline and one-shot.** The literature that makes it work runs a continual loop. I did not, and it did not.
+- **Shipping an ablation for a feature that was not actually on.** The external value net sat in configs as a silent no-op for a stretch. Check that the thing is wired in before you trust its numbers.
 
 ---
 
-## Current Limitations and Known Issues
+## Current Limitations
 
-- No legal-move masking in the training loss yet. Policy is trained as full-vocab classification, then projected to legal moves during play/eval.
 - Training is single-process (no DDP launcher yet).
-- `value_rerank` is one-ply only; `value_search_d2` is depth-2 and substantially slower than greedy.
-- Value labels are noisy for early plies — progress weighting helps but does not fully solve this.
-- Value head may learn player-strength bias (higher Elo games have more draws): we still need stronger value-slice/calibration diagnostics in the evaluator.
+- No legal-move masking in the training loss. The policy is trained as full-vocab classification and projected to legal moves only at play time.
+- Prefix K/V caching is per-turn only; the cache is rebuilt each move and games are played one at a time (no cross-game batching).
+- Value labels are still raw game outcomes, which are noisy. Progress weighting and Elo weighting help but do not fully fix it.
+- The policy-distillation loop is throughput-bound on rollout generation, as above.
 
 ---
 
 ## Planned Next Steps
 
-**Self-play RL (Phase 4)**
-
-After pretraining and value metrics stabilize, next step is RL fine-tuning via self-play:
-
-- Environment: `gym-chess` with parallel rollouts (~1000 workers via pufferlib)
-- Algorithm: PPO or KL-regularized PPO (GRPO-style)
-- Reward: +1 win, 0 draw, −1 loss; optional shaping from engine eval delta
-- League: self-play against current + past checkpoints; optional Stockfish/Leela matches
-
-**Beam Search**
-
-Another path is beam search over likely continuations, with policy priors and value-scored leaves.
-
-**Scaling**
-
-Current production-ish config is ~12.6M parameters on a single RTX 4090. Interesting questions:
-- How far can this config go before scaling width/depth?
-- If we scale toward the original 20–30M target, does Elo improve smoothly?
-- Does Elo scale smoothly with model size?
-- Does value search help more at smaller model sizes (where policy alone is weaker)?
+- Land the faster `gives_check` path and actually run the Phase 1b policy-distillation sweep to a conclusion.
+- If policy distillation improves the raw policy, revisit value distillation inside the resulting loop, where the staleness argument finally applies.
+- Slice metrics by game phase and Elo. Global averages hide regressions.
+- Scale the trunk past `v4` and see whether Elo keeps climbing smoothly, and whether search helps more or less as the policy gets stronger.
+- Only then, RL. Self-play with a KL-regularized PPO objective is still the likely path to the next jump, but I want to exhaust the cheaper imitation-plus-search-plus-distillation route first.
 
 ---
 
 ## References
 
+- [imba-chess on GitHub](https://github.com/viig99/imba-chess)
 - [Lichess Open Database](https://database.lichess.org/)
 - [python-chess](https://python-chess.readthedocs.io/)
 - [Searchless Chess (DeepMind)](https://github.com/google-deepmind/searchless_chess)
 - [grpo_chess](https://github.com/noamdwc/grpo_chess)
-- [PyTorch FlexAttention](https://pytorch.org/docs/stable/nn.attention.flex_attention.html)
-- [Mermaid](https://mermaid.js.org/)
-- Transcendence: Generative Models Can Outperform The Experts That Train Them
-- Amortized Planning with Large-Scale Transformers: A Case Study on Chess
+- Danihelka et al., "Policy improvement by planning with Gumbel" (Gumbel MuZero), ICLR 2022
+- Spigler, "Proximal Policy Distillation", 2024
+- Wu, Han and Cai, "Lightning OPD" (on-policy distillation, teacher consistency), NVIDIA
+- "Transcendence: Generative Models Can Outperform The Experts That Train Them"
+- "Amortized Planning with Large-Scale Transformers: A Case Study on Chess"
 
 ## Related Posts
 
@@ -528,14 +364,4 @@ Current production-ish config is ~12.6M parameters on a single RTX 4090. Interes
 
 ## Closing
 
-My working bet is still the same: structured event modeling from recsys transfers to chess.
-
-Value + search is the bridge from imitation to actual board strength.
-
-Whether that is enough without heavy RL is still open.
-
-The current working hypothesis is:
-
-- better pretraining gives a better prior,
-- value + shallow search converts more of that prior into practical strength,
-- and RL is likely needed to unlock the next jump in actual board-level reasoning.
+The bet has not changed: structured event modeling from recsys transfers to chess. What I have learned since the last update is where the strength actually comes from. Imitation gives a good prior and bad chess. A value head plus a search that allocates its compute well (sequential halving, prior-ordered trees, value never picking what to expand) is what turned that prior into roughly 2250-Elo play, with no RL yet. The open question now is whether I can distill that search back into the policy so it stops being a tax I pay every move. That part is still being built.
