@@ -6,6 +6,34 @@ title: "Open Source Contributions"
 
 ## **Open Source Contributions**
 {{< columns >}}
+### [Imba Chess](https://github.com/viig99/imba-chess)
+<--->
+[![star this repo](https://img.shields.io/github/stars/viig99/imba-chess?style=flat-square)](https://github.com/viig99/imba-chess)
+{{< /columns >}}
+High-Elo chess bot that pairs policy learning from human games — an HSTU sequential transformer pretrained on Lichess — with value-based search (a WDL value head plus depth-2 policy-pruned minimax). Full build log in [Building a Chess Bot with HSTU]({{< relref "/docs/posts/imba-chess" >}}).
+
+{{< columns >}}
+### [MUVERA Fixed-Dimensional Embeddings](https://github.com/viig99/muvfde)
+<--->
+[![star this repo](https://img.shields.io/github/stars/viig99/muvfde?style=flat-square)](https://github.com/viig99/muvfde)
+{{< /columns >}}
+Python library for generating fixed-dimensional embeddings from multi-vector representations, based on Google Research's MUVERA. C++ core exposed to Python via nanobind and published [on PyPI](https://pypi.org/project/muvfde/).
+
+{{< columns >}}
+### [Comparing Online Hyperopt Techniques](https://github.com/viig99/Comparing-Online-Hyperopts)
+<--->
+[![star this repo](https://img.shields.io/github/stars/viig99/Comparing-Online-Hyperopts?style=flat-square)](https://github.com/viig99/Comparing-Online-Hyperopts)
+{{< /columns >}}
+Comparing various online hyper-parameter optimization techniques on sampling efficiency, latency, and ease of implementation.
+
+{{< columns >}}
+### [Maze Solver Animations](https://github.com/viig99/maze_animation_exp)
+<--->
+[![star this repo](https://img.shields.io/github/stars/viig99/maze_animation_exp?style=flat-square)](https://github.com/viig99/maze_animation_exp)
+{{< /columns >}}
+Solving and animating maze-solving algorithms using [Manim](https://www.manim.community/).
+
+{{< columns >}}
 ### [SymSpellCppPy](https://github.com/viig99/SymSpellCppPy)
 <--->
 [![star this repo](https://img.shields.io/github/stars/viig99/SymSpellCppPy?style=flat-square)](https://github.com/viig99/SymSpellCppPy)
